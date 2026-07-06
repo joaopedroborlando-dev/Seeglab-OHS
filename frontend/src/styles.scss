@@ -1,0 +1,25 @@
+:root {
+  --color-border: #ccc;
+  --color-background-light: #f0f0f0;
+  --color-success-light: #e8f5e9;
+  --color-danger-light: #ea9999;
+  --color-warning-light: #ffe599;
+  --color-grey-light: #e4e4e4;
+}
+
+.active {
+  color: #fff !important;
+  background-color: #919191 !important;
+  border-color: #919191 !important;
+}
+.active a{
+  color: #fff !important;
+  background-color: #919191 !important;
+  border-color: #919191 !important;
+}
+
+.nav-item.dropdown .dropdown-item:active {
+  color: #fff !important;
+  background-color: #919191 !important;
+}
+

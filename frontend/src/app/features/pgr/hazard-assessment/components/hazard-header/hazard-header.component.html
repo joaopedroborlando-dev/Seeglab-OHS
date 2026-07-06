@@ -1,0 +1,17 @@
+<div class="mb-3">
+  <!-- Carousel Template -->
+  <ng-template #workUnitTemplate let-content>
+    <app-hazard-carousel-card
+      (onAddHazard)="addHazard($event)"
+      [content]="content"
+    ></app-hazard-carousel-card>
+  </ng-template>
+
+  @if (workUnits) {
+    <app-carousel
+      [optionTemplate]="workUnitTemplate"
+      [items]="workUnits"
+      (itemChange)="onWorkUnitChange($event)"
+    ></app-carousel>
+  }
+</div>

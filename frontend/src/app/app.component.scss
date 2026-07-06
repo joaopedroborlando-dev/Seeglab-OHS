@@ -1,0 +1,24 @@
+.main-layout {
+    display: flex;
+    height: 100vh;
+    overflow: hidden;
+
+    app-sidebar {
+        flex-shrink: 0; // Prevent sidebar from shrinking
+    }
+
+    .content {
+        flex: 1;
+        overflow-y: auto;
+        padding: 20px;
+        background-color: #fff; // Or your background color
+    }
+}
+
+.container {
+    // Styles for non-authenticated view (e.g., login centered)
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}

@@ -1,0 +1,54 @@
+<div class="sidebar" [class.open]="isSidebarOpen">
+    <div class="sidebar-header">
+        <div class="brand" *ngIf="isSidebarOpen">seeglab</div>
+        <button class="toggle-btn" (click)="toggleSidebar()">
+            <i class="bi bi-list"></i>
+        </button>
+    </div>
+
+    <div class="sidebar-content" *ngIf="isSidebarOpen">
+        <nav class="nav-menu">
+            <a routerLink="/home" routerLinkActive="active" class="nav-item">
+                <i class="bi bi-house"></i>
+                <span>{{ "HOME" | translate }}</span>
+            </a>
+
+            <div class="nav-item-group">
+                <button class="nav-item dropdown-btn" (click)="toggleBusinessMenu()">
+                    <div class="d-flex align-items-center">
+                        <i class="bi bi-briefcase"></i>
+                        <span>{{ "BUSINESS" | translate }}</span>
+                    </div>
+                    <i class="bi" [class.bi-chevron-down]="!businessMenuOpen"
+                        [class.bi-chevron-up]="businessMenuOpen"></i>
+                </button>
+                <div class="submenu" [class.show]="businessMenuOpen">
+                    <a routerLink="/business/department" routerLinkActive="active" class="nav-item submenu-item">
+                        {{ "DEPARTMENT" | translate }}
+                    </a>
+                    <a routerLink="/business/role" routerLinkActive="active" class="nav-item submenu-item">
+                        {{ "ROLE" | translate }}
+                    </a>
+                </div>
+            </div>
+
+            <div class="nav-item-group">
+                <button class="nav-item dropdown-btn" (click)="togglePgrMenu()">
+                    <div class="d-flex align-items-center">
+                        <i class="bi bi-shield-check"></i>
+                        <span>{{ "PGR" | translate }}</span>
+                    </div>
+                    <i class="bi" [class.bi-chevron-down]="!pgrMenuOpen" [class.bi-chevron-up]="pgrMenuOpen"></i>
+                </button>
+                <div class="submenu" [class.show]="pgrMenuOpen">
+                    <a routerLink="/pgr/work-unit-inclusion" routerLinkActive="active" class="nav-item submenu-item">
+                        {{ "WORK_UNIT" | translate }}
+                    </a>
+                    <a routerLink="/pgr/assessment" routerLinkActive="active" class="nav-item submenu-item">
+                        {{ "HAZARD_ASSESSMENT" | translate }}
+                    </a>
+                </div>
+            </div>
+        </nav>
+    </div>
+</div>

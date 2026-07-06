@@ -1,0 +1,55 @@
+<div class="container">
+  <div class="login-card">
+    <div class="logo">
+      <h2>seeglab</h2>
+    </div>
+
+    @if (error) {
+      <div class="alert alert-warning" role="alert">
+        {{ 'INVALID_CREDENTIALS' | translate }}
+      </div>
+    }
+
+    <form>
+      <div>
+        <div class="mb-3">
+          <label for="emailControl" class="form-label">{{ 'E-MAIL' | translate }}</label>
+          <input type="email" class="form-control" id="emailControl" [formControl]="emailControl">
+        </div>
+
+        <div class="mb-3">
+          <label for="passwordControl" class="form-label">{{ 'PASSWORD' | translate }}</label>
+          <input type="password" class="form-control" id="passwordControl" [formControl]="passwordControl">
+        </div>
+
+        @if (signupSelected) {
+          <div class="mb-3">
+            <label for="phoneControl" class="form-label">{{ 'PHONE_NUMBER' | translate }}</label>
+            <input mask="(00) 00000-0000" [dropSpecialCharacters]="false" type="tel" class="form-control" id="phoneControl" [formControl]="phoneControl">
+          </div>
+
+          <div class="mb-3">
+            <label for="documentControl" class="form-label">{{ 'DOCUMENT_ID' | translate }}</label>
+            <input
+              type="tel"
+              class="form-control"
+              id="documentControl"
+              mask="000.000.000-00||00.000.000/0000-00"
+              [placeholder]="documentInputPlaceholder | translate "
+              [formControl]="documentControl">
+          </div>
+        }
+      </div>
+    </form>
+
+    @if (!signupSelected) {
+      <div class="signup-container">
+        <span class="signup-text" (click)="setSignup()">{{ 'CREATE_ACCOUNT' | translate }}</span>
+      </div>
+      <button type="button" class="mb-9 btn btn-light" (click)="handleLogin()">Log in</button>
+    } @else {
+      <button type="button" class="mb-9 btn btn-light" (click)="handleSignup()">Sign up</button>
+    }
+
+  </div>
+</div>

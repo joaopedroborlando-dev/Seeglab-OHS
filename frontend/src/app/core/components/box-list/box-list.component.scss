@@ -1,0 +1,161 @@
+// Color Variables
+$white: #ffffff;
+$gray-light: #f9f9f9;
+$gray-border: #ddd;
+$gray-text-light: #999;
+$gray-text-medium: #666;
+$gray-text-dark: #333;
+$blue-highlight: #e3f2fd;
+$blue-border: #2196F3;
+$green-button: #4CAF50;
+$green-button-hover: #45a049;
+$red-button: #f44336;
+$red-button-hover: #d32f2f;
+$gray-disabled: #cccccc;
+$hover-background: #f0f0f0;
+
+.item-list-container {
+  margin: 0 auto 20px auto;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  border: 1px solid $gray-border;
+  border-radius: 4px;
+  padding: 20px;
+
+  .title-container {
+    position: relative;
+    bottom: -12px;
+
+    .title {
+      background-color: $gray-light;
+      padding: 0 5px;
+    }
+  }
+
+  h2 {
+    color: $gray-text-dark;
+    margin-bottom: 15px;
+    text-align: center;
+    width: 100%;
+  }
+
+  .button-controls {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 12px;
+
+    .add-button,
+    .remove-button {
+      width: 40px;
+      height: 40px;
+      border-radius: 4px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      margin-right: 10px;
+      border: none;
+      transition: all 0.2s ease;
+    }
+
+    .add-button {
+      background-color: $green-button;
+      color: $white;
+
+      &:hover {
+        background-color: $green-button-hover;
+      }
+    }
+
+    .remove-button {
+      background-color: $red-button;
+      color: $white;
+
+      &:hover {
+        background-color: $red-button-hover;
+      }
+
+      &:disabled {
+        background-color: $gray-disabled;
+        cursor: not-allowed;
+      }
+    }
+  }
+
+  .plus-icon,
+  .minus-icon {
+    font-size: 22px;
+    font-weight: bold;
+  }
+
+  .input-controls {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 12px;
+
+    input {
+      margin-bottom: 8px;
+      padding: 8px;
+      border: 1px solid $gray-border;
+      border-radius: 4px;
+      font-size: 14px;
+    }
+  }
+
+  .list-box {
+    border: 1px solid $gray-border;
+    border-radius: 4px;
+    padding: 15px;
+    background-color: $white;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    height: 180px;
+    max-height: 180px;
+    overflow-y: auto;
+
+    ul {
+      list-style-type: none;
+      padding: 0;
+      margin: 0;
+    }
+
+    .item {
+      padding: 12px;
+      border-bottom: 1px solid #eee;
+      transition: background-color 0.2s;
+      cursor: pointer;
+
+      &:last-child {
+        border-bottom: none;
+      }
+
+      &:hover {
+        background-color: $hover-background;
+      }
+
+      &.selected {
+        background-color: $blue-highlight;
+        border-left: 4px solid $blue-border;
+      }
+
+      .item-header {
+        font-weight: bold;
+        font-size: 16px;
+        margin-bottom: 5px;
+        color: $gray-text-dark;
+      }
+
+      .item-description {
+        font-size: 14px;
+        color: $gray-text-medium;
+      }
+    }
+
+    .no-items {
+      text-align: center;
+      color: $gray-text-light;
+      padding: 20px 0;
+      font-style: italic;
+    }
+  }
+}

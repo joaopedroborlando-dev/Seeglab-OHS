@@ -1,0 +1,51 @@
+<div class="container">
+  @if (!createMode) {
+  <h2>{{ 'AVAILABLE_INVENTORIES' | translate }}</h2>
+  <div class="row" style="margin-bottom: 5px">
+    <div>
+      <button class="btn btn-success" (click)="onCreateBtnAction()">{{'CREATE_INVENTORY' | translate}}</button>
+    </div>
+  </div>
+  <div class="form">
+    <div class="row">
+      <div class="col-6">
+        <!-- INVENTORY SEARCH INPUT -->
+        <div class="input-group mb-3">
+          <label for="inventoryDataList" class="input-group-text">{{ 'INVENTORY' | translate }}</label>
+          <input class="form-control" list="roleList" id="inventoryDataList" placeholder=""
+            [formControl]="inventoryDescriptionControl">
+          <button class="btn btn-outline-secondary" (click)="onSearchBtnAction()">
+            <i class="bi bi-search"></i>
+          </button>
+          @if (inventoryData) {
+          <datalist id="roleList">
+            @for (inventory of inventoryData; track inventory) {
+            <option [value]="inventory.description">
+              }
+          </datalist>
+          }
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="row">
+    @if (inventoryData && inventoryData.length > 0) {
+    <div class="col-6">
+      @for (inventory of inventoryData; track inventory) {
+      <div style="margin-bottom: 5px">
+        <app-card [cartBodyText]="inventory.description" [cartId]="inventory.id?.toString() || '' "
+          (onAction)="handleCardAction($event)">
+        </app-card>
+      </div>
+      }
+    </div>
+    } @else {
+    @if (!hasData) {
+    <p>{{'PSL_CREATE_INVENTORY' | translate}}</p>
+    }
+    }
+  </div>
+  } @else {
+  <app-create-hazard-inventory [changeCreateMode]="onCreateBtnAction.bind(this)"></app-create-hazard-inventory>
+  }
+</div>

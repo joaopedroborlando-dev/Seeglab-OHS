@@ -1,0 +1,56 @@
+<div class="row mt-2" *ngIf="items && items.length > 1">
+  <div class="col-12 d-flex justify-content-center">
+    <nav>
+      <ul class="pagination pagination-sm">
+        <li
+          *ngFor="let item of items; index as i"
+          class="page-item"
+          [class.active]="i === currentIndex">
+          <button
+            class="page-link"
+            (click)="goToIndex(i)">
+            {{ i + 1 }}
+          </button>
+        </li>
+      </ul>
+    </nav>
+  </div>
+</div>
+
+<div class="row" style="min-height: 60px">
+  <div *ngIf="showSideButtons" class="col-sm-1 justify-content-start" style="display: flex">
+    <button
+      class="btn btn-primary"
+      [disabled]="!canGoPrevious"
+      (click)="goToPrevious()">
+      <i class="bi bi-chevron-compact-left"></i>
+    </button>
+  </div>
+  <div [ngClass]=" showSideButtons ? 'col-sm-10' : 'col-sm-12'">
+    <div class="container">
+      <div class="row">
+        <div class="col" *ngIf="currentItem">
+          <ng-template #defaultTemplate let-content>
+            <app-card
+              [cardTitle]="content?.title"
+              [cartBodyText]="content?.textBody"
+            ></app-card>
+          </ng-template>
+
+          <ng-container
+            [ngTemplateOutlet]="optionTemplate || defaultTemplate"
+            [ngTemplateOutletContext]="{ $implicit: currentItem, index: currentIndex }"
+          ></ng-container>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div *ngIf="showSideButtons"  class="col-sm-1 justify-content-end" style="display: flex">
+    <button
+      class="btn btn-primary"
+      [disabled]="!canGoNext"
+      (click)="goToNext()">
+      <i class="bi bi-chevron-compact-right"></i>
+    </button>
+  </div>
+</div>

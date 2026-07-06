@@ -1,0 +1,11 @@
+<div class="risk-assessment-container">
+  <h3>{{'RISK_ASSESSMENT_MATRIX' | translate }}</h3>
+  @if (workUnits) {
+    <app-hazard-header
+      [workUnits]="workUnits"
+    ></app-hazard-header>
+  }
+  <div>
+    <app-hazard-card></app-hazard-card>
+  </div>
+</div>

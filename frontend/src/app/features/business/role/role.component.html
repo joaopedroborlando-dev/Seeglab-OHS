@@ -1,0 +1,74 @@
+<div class="container">
+  <app-dynamic-form
+    [title]="'ROLE' | translate"
+    [formGroup]="formGroup"
+    [onCreate]="handleCreate.bind(this)">
+    <div class="row">
+      <div class="col-md-6">
+        <div class="input-group mb-3">
+          <span class="input-group-text" id="descriptionControl">{{ 'DESCRIPTION' | translate }}</span>
+          <input type="text" class="form-control" placeholder="" aria-label="" aria-describedby="descriptionControl" formControlName="description">
+        </div>
+        <div class="input-group mb-3">
+          <label for="departmentDataList" class="input-group-text">{{ 'DEPARTMENT' | translate }}</label>
+          <input class="form-control"
+            list="roleList"
+            id="departmentDataList"
+            placeholder=""
+            formControlName="department"
+            (change)="onDepartmentSelectionChange()"
+            >
+          @if (departmentData) {
+            <datalist id="roleList">
+              @for (department of departmentData; track department) {
+                <option [value]="department.description">
+                }
+              </datalist>
+            }
+          </div>
+        </div>
+      </div>
+    </app-dynamic-form>
+    <div class="row">
+      <div class="col-md-6">
+        <app-dynamic-table
+          [data]="dataTable"
+          [canEdit]="true"
+          (onEdit)="handleEdit($event)"
+        ></app-dynamic-table>
+
+        <!-- Bootstrap Pagination -->
+        @if (totalPages > 0) {
+          <nav aria-label="Department pagination">
+            <ul class="pagination">
+              <!-- Previous button -->
+              <li class="page-item" [class.disabled]="currentPage === 1">
+                <a class="page-link" href="javascript:void(0)" (click)="previousPage()" aria-label="Previous">
+                  <span aria-hidden="true">&laquo;</span>
+                </a>
+              </li>
+              <!-- Page numbers -->
+              @for (page of getPageNumbers(); track page) {
+                <li class="page-item" [class.active]="page === currentPage">
+                  <a class="page-link" href="javascript:void(0)" (click)="goToPage(page)">{{ page }}</a>
+                </li>
+              }
+              <!-- Next button -->
+              <li class="page-item" [class.disabled]="currentPage === totalPages">
+                <a class="page-link" href="javascript:void(0)" (click)="nextPage()" aria-label="Next">
+                  <span aria-hidden="true">&raquo;</span>
+                </a>
+              </li>
+            </ul>
+          </nav>
+        }
+
+        <!-- Pagination info -->
+        @if (totalItems > 0) {
+          <div class="text-muted small mt-2">
+            {{ 'SHOWING' | translate }} {{ (currentPage - 1) * pageSize + 1 }} - {{ Math.min(currentPage * pageSize, totalItems) }} {{ 'OF' | translate }} {{ totalItems }} {{ 'ENTRIES' | translate }}
+          </div>
+        }
+      </div>
+    </div>
+  </div>

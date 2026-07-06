@@ -1,0 +1,21 @@
+<div class="form-container">
+  <div>
+    @if(inventory?.description){
+    <h3>{{'INCLUDE_WORK_UNIT' | translate}} - {{inventory?.description}}</h3>
+    } @else {
+    <h3>{{'INCLUDE_WORK_UNIT' | translate}}</h3>
+    }
+  </div>
+  <div class="row">
+    <div class="col-4" style="margin-top: 32px; max-height: 500px">
+      @for (el of inventory?.workUnits; track el) {
+      <app-card [cardTitle]="el?.departmentDescription ?? ''" [cartBodyText]="getCardText(el)"
+        [btnIconName]="'bi bi-clipboard2-fill'" [enableDeleteBtn]="true" (onDeleteAction)="onDeleteAction($event)"
+        (onAction)="onCardAction($event)" [cartId]="el?.id?.toString() ?? ''"></app-card>
+      }
+    </div>
+    <div class="col-8">
+      <app-department-binding-grid></app-department-binding-grid>
+    </div>
+  </div>
+</div>
