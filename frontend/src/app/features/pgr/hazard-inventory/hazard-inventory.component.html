@@ -3,7 +3,7 @@
   <h2>{{ 'AVAILABLE_INVENTORIES' | translate }}</h2>
   <div class="row" style="margin-bottom: 5px">
     <div>
-      <button class="btn btn-success" (click)="onCreateBtnAction()">{{'CREATE_INVENTORY' | translate}}</button>
+      <button class="btn btn-success" (click)="onCreateBtnAction()">{{'NEW_INVENTORY' | translate}}</button>
     </div>
   </div>
   <div class="form">
@@ -20,7 +20,7 @@
           @if (inventoryData) {
           <datalist id="roleList">
             @for (inventory of inventoryData; track inventory) {
-            <option [value]="inventory.description">
+            <option [value]="inventory.name">
               }
           </datalist>
           }
@@ -33,7 +33,7 @@
     <div class="col-6">
       @for (inventory of inventoryData; track inventory) {
       <div style="margin-bottom: 5px">
-        <app-card [cartBodyText]="inventory.description" [cartId]="inventory.id?.toString() || '' "
+        <app-card [cartBodyText]="inventory.name" [cartId]="inventory.id?.toString() || '' "
           (onAction)="handleCardAction($event)">
         </app-card>
       </div>

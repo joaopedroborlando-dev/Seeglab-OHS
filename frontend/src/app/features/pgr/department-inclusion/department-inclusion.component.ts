@@ -62,6 +62,7 @@ export class DepartmentInclusionComponent implements OnInit, OnDestroy {
       this.depAssessmentService.setHazardInventoryState({
         id: this.inventory?.id ?? undefined,
         businessId: this.inventory.businessId,
+        name: this.inventory.name,
         description: this.inventory?.description,
         createdAt: this.inventory?.createdAt,
         workUnits: this.inventory.workUnits ?? [],
@@ -73,10 +74,10 @@ export class DepartmentInclusionComponent implements OnInit, OnDestroy {
   // Card handlers section
   async onDeleteAction(event: string): Promise<void> {
     try {
-      await this.apiService.deleteData("pgr/dep-assessment/delete", { id: parseInt(event) });
+      await this.apiService.deleteData("pgr/work-unit/delete", { id: event });
       if (this.inventory?.workUnits) {
-        const filteredDeptAssessmentArray = this.inventory.workUnits.filter(el => el.id?.toString() != event);
-        this.depAssessmentService.updateHazardInventoryState({ workUnits: filteredDeptAssessmentArray });
+        const filteredWorkUnitArray = this.inventory.workUnits.filter(el => el.id?.toString() != event);
+        this.depAssessmentService.updateHazardInventoryState({ workUnits: filteredWorkUnitArray });
       }
       this.toastService.success('SUCCESSFULLY_DELETED');
     } catch (error) {
@@ -94,8 +95,8 @@ export class DepartmentInclusionComponent implements OnInit, OnDestroy {
 
     for (let role of workUnitsDto.roles) {
       if (text.length > 0)
-        text = text + " | " + role.description;
-      else text = text + role.description;
+        text = text + " | " + role.name;
+      else text = text + role.name;
     }
 
     return text;

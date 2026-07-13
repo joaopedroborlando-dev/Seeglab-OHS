@@ -2,6 +2,7 @@ interface IPaginationOptions {
   page: number;
   limit: number;
   search?: string;
+  filter?: any;
 }
 
 interface IPaginatedResponse<T> {

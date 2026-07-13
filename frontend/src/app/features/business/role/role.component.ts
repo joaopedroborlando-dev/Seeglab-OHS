@@ -3,6 +3,7 @@ import { FormControl, FormGroup, FormsModule, ReactiveFormsModule } from '@angul
 import { DynamicFormComponent } from '../../../core/components/dynamic-form/dynamic-form.component';
 import { TranslatePipe } from '@ngx-translate/core';
 import { ApiService } from '../../../core/services/api.service';
+import { DropdownInputComponent, DropdownOption } from '../../../core/components/dropdown-input/dropdown-input.component';
 import IDynamicTableData from '../../../core/models/interfaces/IDynamicTableData';
 import { isStringInvalid } from '../../../shared/utils/validationHelpers';
 import { IPaginatedResponse, IPaginationOptions } from '../../../core/http/dtos/PaginationTypes';
@@ -10,7 +11,6 @@ import { DynamicTableComponent } from '../../../core/components/dynamic-table/dy
 
 import IRoleDto from '../../../core/http/dtos/IRoleDto';
 import IDepartmentDto from '../../../core/http/dtos/IDepartmentDto';
-import { debounceTime, distinctUntilChanged } from 'rxjs';
 
 @Component({
   selector: 'app-role',
@@ -19,7 +19,8 @@ import { debounceTime, distinctUntilChanged } from 'rxjs';
     FormsModule,
     ReactiveFormsModule,
     TranslatePipe,
-    DynamicTableComponent
+    DynamicTableComponent,
+    DropdownInputComponent
   ],
   templateUrl: './role.component.html',
   styleUrl: './role.component.scss'
@@ -36,8 +37,10 @@ export class RoleComponent implements OnInit {
   formGroup = new FormGroup({
     description: new FormControl(''),
     department: new FormControl(''),
+    name: new FormControl(''),
   });
   departmentData!: IDepartmentDto[];
+  departmentOptions: DropdownOption[] = [];
   selectedDepartmentId: number | null = null;
   editMode = false;
   editItemId: string | null = null;
@@ -49,8 +52,6 @@ export class RoleComponent implements OnInit {
   protected readonly Math = Math;
 
   async ngOnInit(): Promise<void> {
-    this.setupDepartmentSearchListener();
-
     await Promise.all([
       this.fetchRoles(),
       this.fetchDepartments()
@@ -64,6 +65,7 @@ export class RoleComponent implements OnInit {
     if (!this.editMode)
       this.apiService.postData("business/role/create", {
         description: this.formGroup.get("description")?.value,
+        name: this.formGroup.get("name")?.value,
         departmentId: this.selectedDepartmentId,
       })
         .then((response: any) => { })
@@ -74,6 +76,7 @@ export class RoleComponent implements OnInit {
     if (this.editMode && this.editItemId) {
       const postObj: IRoleDto = {
         description: this.formGroup.get("description")?.value ?? undefined,
+        name: this.formGroup.get("name")?.value ?? undefined,
         id: parseInt(this.editItemId),
       }
       if (this.selectedDepartmentId) postObj.departmentId = this.selectedDepartmentId;
@@ -101,7 +104,7 @@ export class RoleComponent implements OnInit {
         data.data.forEach(d => {
           this.dataTable.data.push({
             rowId: d.id?.toString() ?? "",
-            rowData: [{ key: d.id?.toString() ?? "", value: d.description ?? "" }]
+            rowData: [{ key: d.id?.toString() ?? "", value: d.name ?? "", ref: { name: d.name ?? "", description: d.description ?? "" } }]
           }
           );
         });
@@ -111,8 +114,7 @@ export class RoleComponent implements OnInit {
       });
   }
 
-  async fetchDepartments(): Promise<void> {
-    const searchTerm = this.formGroup.get("department")?.value || ""
+  async fetchDepartments(searchTerm: string = ""): Promise<void> {
     const paginationOptions: IPaginationOptions = {
       limit: 10,
       page: 1,
@@ -122,6 +124,10 @@ export class RoleComponent implements OnInit {
       .then(res => {
         const responseData = res;
         this.departmentData = responseData.data;
+        this.departmentOptions = responseData.data.map(d => ({
+          id: d.id!,
+          name: d.name ?? d.description ?? ""
+        }));
       })
       .catch(error => {
         console.log(error.message);
@@ -129,17 +135,6 @@ export class RoleComponent implements OnInit {
   }
 
   // Form Section
-
-  setupDepartmentSearchListener(): void {
-    this.formGroup.get("department")?.valueChanges
-      .pipe(
-        debounceTime(800),
-        distinctUntilChanged()
-      )
-      .subscribe(value => {
-        this.fetchDepartments();
-      });
-  }
 
   resetForm(): void {
     this.editMode = false;
@@ -152,66 +147,19 @@ export class RoleComponent implements OnInit {
   // Table handlers Section
   handleEdit(id: string) {
     const row = this.dataTable.data.find(el => el.rowId === id);
-    const editDescription = row?.rowData[0].value;
+    const editDescription = row?.rowData[0].ref?.description;
+    const editName = row?.rowData[0].ref?.name;
     this.formGroup.get("description")?.setValue(editDescription ?? "");
+    this.formGroup.get("name")?.setValue(editName ?? "");
     this.editItemId = id;
     this.editMode = true;
   }
   // End Table handlers Section
 
-
-  // Pagination Section
-  goToPage(page: number): void {
-    if (page < 1 || page > this.totalPages || page === this.currentPage) {
-      return;
-    }
-    this.fetchRoles(page);
-  }
-
-  previousPage(): void {
-    if (this.currentPage > 1) {
-      this.goToPage(this.currentPage - 1);
-    }
-  }
-
-  nextPage(): void {
-    if (this.currentPage < this.totalPages) {
-      this.goToPage(this.currentPage + 1);
-    }
-  }
-
-  getPageNumbers(): number[] {
-    const pages: number[] = [];
-    const maxPagesToShow = 5;
-
-    if (this.totalPages <= maxPagesToShow) {
-      for (let i = 1; i <= this.totalPages; i++) {
-        pages.push(i);
-      }
-    } else {
-      let startPage = Math.max(1, this.currentPage - 2);
-      let endPage = Math.min(this.totalPages, startPage + maxPagesToShow - 1);
-
-      if (endPage - startPage < maxPagesToShow - 1) {
-        startPage = Math.max(1, endPage - maxPagesToShow + 1);
-      }
-
-      for (let i = startPage; i <= endPage; i++) {
-        pages.push(i);
-      }
-    }
-
-    return pages;
-  }
-  // End Pagination Section
-
   // Department handlers section
-  onDepartmentSelectionChange(): void {
-    const department = this.departmentData.find(
-      dept => dept.description === this.formGroup.get("department")?.value
-    );
-    if (department && department.id) {
-      this.selectedDepartmentId = department.id;
+  onDepartmentSelectionChange(option: DropdownOption): void {
+    if (option && option.id) {
+      this.selectedDepartmentId = option.id as number;
     }
   }
   // End Department handlers section

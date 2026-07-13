@@ -9,7 +9,8 @@ export class FormRowFactorMapper {
   ): IRowFactorDto {
     return {
       factor: {
-        description: formValue.factor || '',
+        description: formValue.factorDescription || '',
+        id: formValue.factorId,
       },
       intensity: formValue.intensity || '',
       technique: formValue.technique || '',
@@ -65,5 +66,25 @@ export class FormRowFactorMapper {
       'VERY_HIGH': MatrixEnum.VERY_HIGH,
     };
     return mapping[value || ''] || MatrixEnum.VERY_LOW;
+  }
+
+  static exposureTimeEnumToString(value: number | null): string {
+    const mapping: Record<number, string> = {
+      1: 'INTERMITTENT',
+      2: 'OCCASIONAL',
+      3: 'PERMANENT',
+    };
+    return mapping[value || 1];
+  }
+
+  static matrixEnumToString(value: number | null): string {
+    const mapping: Record<number, string> = {
+      1: 'VERY_LOW',
+      2: 'LOW',
+      3: 'MODERATE',
+      4: 'HIGH',
+      5: 'VERY_HIGH',
+    };
+    return mapping[value || 1];
   }
 }

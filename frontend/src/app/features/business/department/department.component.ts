@@ -27,18 +27,19 @@ export class DepartmentComponent implements OnInit {
   apiService: ApiService = inject(ApiService);
   // Request
   dataTable: IDynamicTableData = {
-    header: ["DESCRIPTION"],
+    header: ["NAME"],
     data: []
   }
   // Form
   formGroup = new FormGroup({
-    description: new FormControl('')
+    description: new FormControl(''),
+    name: new FormControl('')
   });
   editMode = false;
   editItemId!: string;
   // Pagination state
   currentPage: number = 1;
-  pageSize: number = 10;
+  pageSize: number = 5;
   totalItems: number = 0;
   totalPages: number = 0;
   protected readonly Math = Math;
@@ -48,27 +49,33 @@ export class DepartmentComponent implements OnInit {
   }
 
   async handleCreate(): Promise<void> {
-    if (isStringInvalid(this.formGroup.get("description")?.value)) {
+    if (isStringInvalid(this.formGroup.get("name")?.value)) {
       return;
     }
     if (!this.editMode)
-      this.apiService.postData("business/department/create", { description: this.formGroup.get("description")?.value })
+      this.apiService.postData("business/department/create",
+        {
+          description: this.formGroup.get("description")?.value,
+          name: this.formGroup.get("name")?.value
+        })
         .then((response: any) => {
           this.formGroup.get("description")?.setValue("");
           this.fetchDepartments();
         });
-    if (this.editMode) {
+    if (this.editMode)
       this.apiService.postData("business/department/update", {
         description: this.formGroup.get("description")?.value,
+        name: this.formGroup.get("name")?.value,
         id: parseInt(this.editItemId),
       })
         .then((response: any) => {
           this.formGroup.get("description")?.setValue("");
+          this.formGroup.get("name")?.setValue("");
         }).finally(() => {
           this.editMode = false;
           this.fetchDepartments();
         });
-    }
+
   }
 
   async fetchDepartments(page: number = 1): Promise<void> {
@@ -86,7 +93,7 @@ export class DepartmentComponent implements OnInit {
         data.data.forEach(d => {
           this.dataTable.data.push({
             rowId: d.id?.toString() ?? "",
-            rowData: [{ key: d.id?.toString() ?? "", value: d.description ?? "" }]
+            rowData: [{ key: d.id?.toString() ?? "", value: d.name ?? "", ref: { description: d.description, name: d.name } }]
           }
           );
         });
@@ -99,56 +106,11 @@ export class DepartmentComponent implements OnInit {
   // Table handlers Section
   handleEdit(id: string) {
     const row = this.dataTable.data.find(el => el.rowId === id);
-    const editDescription = row?.rowData[0].value;
-    this.formGroup.get("description")?.setValue(editDescription ?? "");
+    const departmentObj: any = row?.rowData[0].ref;
+    this.formGroup.get("description")?.setValue(departmentObj?.description ?? "");
+    this.formGroup.get("name")?.setValue(departmentObj?.name ?? "");
     this.editItemId = id;
     this.editMode = true;
   }
   // End Table handlers Section
-
-
-  // Pagination Section
-  goToPage(page: number): void {
-    if (page < 1 || page > this.totalPages || page === this.currentPage) {
-      return;
-    }
-    this.fetchDepartments(page);
-  }
-
-  previousPage(): void {
-    if (this.currentPage > 1) {
-      this.goToPage(this.currentPage - 1);
-    }
-  }
-
-  nextPage(): void {
-    if (this.currentPage < this.totalPages) {
-      this.goToPage(this.currentPage + 1);
-    }
-  }
-
-  getPageNumbers(): number[] {
-    const pages: number[] = [];
-    const maxPagesToShow = 5;
-
-    if (this.totalPages <= maxPagesToShow) {
-      for (let i = 1; i <= this.totalPages; i++) {
-        pages.push(i);
-      }
-    } else {
-      let startPage = Math.max(1, this.currentPage - 2);
-      let endPage = Math.min(this.totalPages, startPage + maxPagesToShow - 1);
-
-      if (endPage - startPage < maxPagesToShow - 1) {
-        startPage = Math.max(1, endPage - maxPagesToShow + 1);
-      }
-
-      for (let i = startPage; i <= endPage; i++) {
-        pages.push(i);
-      }
-    }
-
-    return pages;
-  }
-  // End Pagination Section
 }

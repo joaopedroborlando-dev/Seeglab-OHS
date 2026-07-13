@@ -49,6 +49,21 @@
                     </a>
                 </div>
             </div>
+
+            <div class="nav-item-group">
+                <button class="nav-item dropdown-btn" (click)="toggleEpiMenu()">
+                    <div class="d-flex align-items-center">
+                        <i class="bi bi-shield-plus"></i>
+                        <span>{{ "EPI_CONTROL" | translate }}</span>
+                    </div>
+                    <i class="bi" [class.bi-chevron-down]="!epiMenuOpen" [class.bi-chevron-up]="epiMenuOpen"></i>
+                </button>
+                <div class="submenu" [class.show]="epiMenuOpen">
+                    <a routerLink="/pgr/epi" routerLinkActive="active" class="nav-item submenu-item">
+                        {{ "EPI" | translate }}
+                    </a>
+                </div>
+            </div>
         </nav>
     </div>
 </div>

@@ -17,17 +17,18 @@ import IRowFactorDto from '../../../../../core/http/dtos/IRowFactorDto';
 import { ToastService } from '../../../../../core/services/toast.service';
 import { WorkUnitService } from '../../../services/work-unit.service';
 import IHazardDto from '../../../../../core/http/dtos/IHazardDto';
-import { HazardAssessmentTableComponent } from "../hazard-assessment-table/hazard-assessment-table.component";
+import { HazardAssessmentTableComponent } from "./components/hazard-assessment-table/hazard-assessment-table.component";
 import { IControlMeasureDto } from '../../../../../core/http/dtos/IControlMeasureDto';
+import { ModalService } from '../../../../../core/services/modal.service';
 
 @Component({
   selector: 'app-hazard-card',
   imports: [
     TranslatePipe,
     ReactiveFormsModule,
+    HazardAssessmentTableComponent,
     NgClass,
-    DropdownInputComponent,
-    HazardAssessmentTableComponent
+    DropdownInputComponent
   ],
   templateUrl: './hazard-card.component.html',
   styleUrl: './hazard-card.component.scss'
@@ -38,6 +39,7 @@ export class HazardCardComponent implements OnInit, OnDestroy {
   assessmentService: HazardAssessmentsService = inject(HazardAssessmentsService);
   toastService: ToastService = inject(ToastService);
   workUnitService: WorkUnitService = inject(WorkUnitService);
+  modalService: ModalService = inject(ModalService);
 
   // Hazard Assessment Control
   assessmentSub!: Subscription;
@@ -58,15 +60,20 @@ export class HazardCardComponent implements OnInit, OnDestroy {
 
   // Row Factor FormGroup
   rowFactorGroup = new FormGroup({
-    factor: new FormControl(null, [Validators.required]),
-    intensity: new FormControl(null, [Validators.required]),
-    technique: new FormControl(null, [Validators.required]),
-    source: new FormControl(null, [Validators.required]),
-    exposureTime: new FormControl(null, [Validators.required]),
-    harm: new FormControl(null, [Validators.required]),
-    probability: new FormControl(null, [Validators.required]),
-    severity: new FormControl(null, [Validators.required]),
+    id: new FormControl<number | null>(null),
+    factorDescription: new FormControl('', [Validators.required]),
+    factorId: new FormControl<number | null>(null),
+    intensity: new FormControl<string | null>(''),
+    technique: new FormControl<string | null>(''),
+    source: new FormControl<string | null>('', [Validators.required]),
+    exposureTime: new FormControl<string | null>('INTERMITTENT', [Validators.required]),
+    harm: new FormControl<string | null>('', [Validators.required]),
+    probability: new FormControl<string | null>('VERY_LOW', [Validators.required]),
+    severity: new FormControl<string | null>('VERY_LOW', [Validators.required]),
   })
+
+  // Collape DIV
+  @ViewChild('collapseForm', { static: false }) collapseFormRef!: ElementRef;
 
   matrixArr: string[] = [
     'VERY_LOW',
@@ -140,13 +147,64 @@ export class HazardCardComponent implements OnInit, OnDestroy {
     this.createRowFactor(rowFactorDto);
   }
 
-  onInsertRow(row: Partial<IRowFactorDto>): void {
-    const rowFactorDto = FormRowFactorMapper.mapRowFactorToDto(
-      row as IRowFactorDto,
-      this.currentAssessment?.id,
-      this.currentAssessment?.hazard?.id ?? undefined
-    );
-    this.createRowFactor(rowFactorDto);
+  openForm() {
+    if (this.collapseFormRef) {
+      const bsCollapse = (window as any).bootstrap?.Collapse?.getInstance(this.collapseFormRef.nativeElement);
+      if (bsCollapse) {
+        bsCollapse.show();
+      } else {
+        new (window as any).bootstrap.Collapse(this.collapseFormRef.nativeElement, { toggle: false }).show();
+      }
+    }
+  }
+
+  collapseForm() {
+    if (this.collapseFormRef) {
+      const bsCollapse = (window as any).bootstrap?.Collapse?.getInstance(this.collapseFormRef.nativeElement);
+      if (bsCollapse) {
+        bsCollapse.hide();
+      } else {
+        new (window as any).bootstrap.Collapse(this.collapseFormRef.nativeElement, { toggle: false }).hide();
+      }
+    }
+  }
+
+  onCancelSubmit() {
+    this.rowFactorGroup.markAsUntouched();
+    this.rowFactorGroup.reset();
+    this.collapseForm();
+  }
+
+  onEditRowFactor(rowFactorDto: IRowFactorDto): void {
+    this.rowFactorGroup.patchValue({
+      id: rowFactorDto.id,
+      factorDescription: rowFactorDto?.factor?.description ?? '',
+      factorId: rowFactorDto?.factor?.id,
+      intensity: rowFactorDto?.intensity,
+      technique: rowFactorDto?.technique,
+      source: rowFactorDto.source,
+      exposureTime: FormRowFactorMapper.exposureTimeEnumToString(rowFactorDto.exposureTime),
+      harm: rowFactorDto.harm,
+      probability: FormRowFactorMapper.matrixEnumToString(rowFactorDto.probability),
+      severity: FormRowFactorMapper.matrixEnumToString(rowFactorDto.severity),
+    })
+    this.openForm();
+  }
+
+  async onDeleteRow(id: number) {
+    this.modalService.open('CONFIRM', 'DELETE_CONFIRM', 'CONFIRM', 'CANCEL').then((result) => {
+      if (result) {
+        this.apiService.delete$('pgr/row/delete', { id }).subscribe({
+          next: () => {
+            this.toastService.success('ROW_FACTOR_DELETED');
+            this.assessmentService.updateHazardAssessmentsState({ rows: this.currentAssessment?.rows?.filter(r => r.id !== id) || [] });
+          },
+          error: (err) => {
+            console.error('Error deleting row factor:', err);
+          }
+        })
+      }
+    });
   }
   //#endregion
 

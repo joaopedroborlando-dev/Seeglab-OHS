@@ -1,19 +1,19 @@
 @if (currentAssessment) {
 <div class="card-container" [style.background-color]="currentAssessment.hazard.color">
   <div class="row">
-    <div class="col-4 dropdown-input-container position-relative">
-      <button class="btn btn-primary" type="button" data-bs-toggle="collapse" data-bs-target="#collapseForm"
-        aria-expanded="false" aria-controls="collapseForm" style="margin-right: 5px">
+    <div class="col-12 col-lg-6 dropdown-input-container position-relative">
+      <button class="btn btn-secondary" type="button" aria-expanded="false" aria-controls="collapseForm"
+        style="margin-right: 5px">
         {{ currentAssessment.hazard.description | translate}}
       </button>
       <div #dropdownContainer style="display: inline">
-        <button class="btn btn-primary" type="button" (click)="onRiskFactorsBtnClicked()">
-          <i class="bi bi-search"></i>
+        <button class="btn btn-secondary" type="button" (click)="onRiskFactorsBtnClicked()" style="margin-right: 5px">
+          <i class="bi bi-arrow-left-right"></i>
         </button>
         <!-- Dropdown Menu -->
         <ul class="dropdown-menu w-100" #dropdownContainer
           [class.show]="showIncludedFactorsDropdown && includedFactorsOptions.length > 0">
-          @for (option of includedFactorsOptions; track option; let i = $index) {
+          @for (option of includedFactorsOptions; track option.id; let i = $index) {
           <li class="dropdown-item" [class.active]="i === selectedIncludedFactorsIndex"
             (mousedown)="selectIncludedFactorsOption(option, i)" (mouseenter)="selectedIncludedFactorsIndex = i">
             {{ option.name | translate }}
@@ -21,24 +21,30 @@
           }
         </ul>
       </div>
+      <button class="btn btn-secondary" type="button" data-bs-toggle="collapse" data-bs-target="#collapseForm"
+        style="margin-right: 5px">
+        <span>{{ "ADD" | translate}}</span>
+      </button>
+      <button class="btn btn-secondary" type="button" data-bs-toggle="collapse" data-bs-target="#collapseForm">
+        <i class="bi bi-search"></i>
+      </button>
     </div>
   </div>
 </div>
-}
-<div class="collapse" id="collapseForm">
+<div class="collapse" id="collapseForm" #collapseForm>
   <form class="row g-3 needs-validation" style="padding: 20px" [formGroup]="rowFactorGroup" (ngSubmit)="onSubmit()"
     novalidate>
     <!-- FACTOR INPUT -->
-    <div class="col-md-2">
+    <div class="col-6 col-lg-4">
       <app-dropdown-input inputId="factorInput" [options]="factorOptions" [isLoading]="isLoadingFactors"
-        [inputClass]="(rowFactorGroup.get('factor')?.invalid && (rowFactorGroup.get('factor')?.dirty || rowFactorGroup.get('factor')?.touched)) ? 'is-invalid' : ''"
-        formControlName="factor" loadingText="SEARCHING" noResultsText="NO_RESULTS_FOUND"
+        [inputClass]="(rowFactorGroup.get('factorDescription')?.invalid && (rowFactorGroup.get('factorDescription')?.dirty || rowFactorGroup.get('factorDescription')?.touched)) ? 'is-invalid' : ''"
+        label="FACTOR" formControlName="factorDescription" loadingText="SEARCHING" noResultsText="NO_RESULTS_FOUND"
         emptyStateText="TYPE_TO_SEARCH" [minSearchLength]="0" [debounceTime]="300" (search)="onFactorSearch($event)"
         (optionSelected)="onFactorSelected($event)">
       </app-dropdown-input>
     </div>
     <!-- INTENSITY INPUT -->
-    <div class="col-md-2">
+    <div class="col-6 col-lg-4">
       <label for="intensityInput" class="form-label">{{"INTENSITY" | translate}}</label>
       <input type="text" class="form-control" id="intensityInput" formControlName="intensity"
         [ngClass]="{'is-invalid': (rowFactorGroup.get('intensity')?.invalid && (rowFactorGroup.get('intensity')?.dirty || rowFactorGroup.get('intensity')?.touched))}"
@@ -50,7 +56,7 @@
       }
     </div>
     <!-- TECHNIQUE INPUT -->
-    <div class="col-md-2">
+    <div class="col-6 col-lg-4">
       <label for="techniqueInput" class="form-label">{{"TECHNIQUE" | translate}}</label>
       <input type="text" class="form-control" id="techniqueInput" formControlName="technique"
         [ngClass]="{'is-invalid': (rowFactorGroup.get('technique')?.invalid && (rowFactorGroup.get('technique')?.dirty || rowFactorGroup.get('technique')?.touched))}"
@@ -62,7 +68,7 @@
       }
     </div>
     <!-- SOURCE -->
-    <div class="col-md-2">
+    <div class="col-6 col-lg-4">
       <label for="sourceInput" class="form-label">{{"SOURCE" | translate}}</label>
       <input type="text" class="form-control" id="sourceInput"
         [ngClass]="{'is-invalid': (rowFactorGroup.get('source')?.invalid && (rowFactorGroup.get('source')?.dirty || rowFactorGroup.get('source')?.touched))}"
@@ -74,7 +80,7 @@
       }
     </div>
     <!-- EXPOSURE TIME -->
-    <div class="col-md-2">
+    <div class="col-6 col-lg-4">
       <label for="exposureTimeInput" class="form-label">{{"EXPOSURE_TIME" | translate}}</label>
       <select id="exposureTimeInput"
         [ngClass]="{'is-invalid': (rowFactorGroup.get('exposureTime')?.invalid && (rowFactorGroup.get('exposureTime')?.dirty || rowFactorGroup.get('exposureTime')?.touched))}"
@@ -93,7 +99,7 @@
       }
     </div>
     <!-- HARM -->
-    <div class="col-md-2">
+    <div class="col-6 col-lg-4">
       <label for="harmInput" class="form-label">{{"HARM" | translate}}</label>
       <input type="text"
         [ngClass]="{'is-invalid': (rowFactorGroup.get('harm')?.invalid && (rowFactorGroup.get('harm')?.dirty || rowFactorGroup.get('harm')?.touched))}"
@@ -105,7 +111,7 @@
       }
     </div>
     <!-- PROBABILITY -->
-    <div class="col-md-2">
+    <div class="col-6 col-lg-4">
       <label for="probabilityInput" class="form-label">{{"PROBABILITY" | translate}}</label>
       <select id="probabilityInput"
         [ngClass]="{'is-invalid': (rowFactorGroup.get('probability')?.invalid && (rowFactorGroup.get('probability')?.dirty || rowFactorGroup.get('probability')?.touched))}"
@@ -124,7 +130,7 @@
       }
     </div>
     <!-- SEVERITY -->
-    <div class="col-md-2">
+    <div class="col-6 col-lg-4">
       <label for="severityInput" class="form-label">{{"SEVERITY" | translate}}</label>
       <select id="severityInput"
         [ngClass]="{'is-invalid': (rowFactorGroup.get('severity')?.invalid && (rowFactorGroup.get('severity')?.dirty || rowFactorGroup.get('severity')?.touched))}"
@@ -143,12 +149,14 @@
       }
     </div>
     <div class="col-12">
-      <button class="btn btn-sm btn-outline-success" type="submit">{{"SAVE" | translate}}</button>
+      <button class="btn btn-sm btn-outline-success" type="submit" style="margin-right: 5px;">{{"SAVE" |
+        translate}}</button>
+      <button class="btn btn-sm btn-outline-danger" type="button" (click)="onCancelSubmit()">{{"CANCEL" |
+        translate}}</button>
     </div>
   </form>
 </div>
-@if(currentAssessment) {
-<app-hazard-assessment-table [assessment]="currentAssessment" (insertRow)="onInsertRow($event)"
-  (insertControlMesure)="onInsertControlMesure($event)"
-  (deleteControlMesure)="deleteControlMesure($event)"></app-hazard-assessment-table>
+<app-hazard-assessment-table [assessment]="currentAssessment" (editRowFactor)="onEditRowFactor($event)"
+  (deleteControlMesure)="deleteControlMesure($event)"
+  (deleteRowFactor)="onDeleteRow($event)"></app-hazard-assessment-table>
 }

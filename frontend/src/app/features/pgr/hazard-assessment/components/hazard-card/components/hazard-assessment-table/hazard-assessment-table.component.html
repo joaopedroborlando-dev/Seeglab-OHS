@@ -1,0 +1,130 @@
+<!-- ROW FACTORS TABLE -->
+@if (assessment() && assessment()?.rows) {
+<table class="risk-table">
+    <thead>
+        <tr>
+            <th class="actions-column">{{"ACTIONS" | translate}}</th>
+            <th class="factor-column">{{"FACTOR" | translate}}</th>
+            <th class="intensity-column">{{"INTENSITY" | translate}}</th>
+            <th class="technique-column">{{"TECHNIQUE" | translate}}</th>
+            <th class="source-column">{{"SOURCE" | translate}}</th>
+            <th class="exposure-column">{{"EXPOSURE_TIME" | translate}}</th>
+            <th class="harm-column">{{"HARM" | translate}}</th>
+            <th class="matrix-column">{{"CHANCE" | translate}}</th>
+            <th class="matrix-column">{{"SEVERITY" | translate}}</th>
+            <th class="score-column">{{"SCORE" | translate}}</th>
+        </tr>
+    </thead>
+    <tbody>
+        @for (row of assessment()?.rows; track row.id) {
+        <tr class="factor-row">
+            <td class="actions-column" [attr.data-label]="'ACTIONS' | translate">
+                <div class="actions-container">
+                    <div class="dropdown w-100">
+                        <button class="btn btn-sm btn-outline-secondary w-100" type="button" data-bs-toggle="dropdown"
+                            aria-expanded="false">
+                            <i class="bi bi-three-dots-vertical icon-cell"></i>
+                        </button>
+                        <ul class="dropdown-menu">
+                            <li>
+                                <button class="dropdown-item text-secondary" (click)="onEditClick(row)"
+                                    title="{{ 'EDIT' | translate }}">
+                                    <i class="bi bi-pencil me-2"></i> {{ 'EDIT' | translate }}
+                                </button>
+                            </li>
+                            <li>
+                                <button class="dropdown-item text-secondary" (click)="onDeleteClick(row)"
+                                    title="{{ 'DELETE' | translate }}">
+                                    <i class="bi bi-trash me-2"></i> {{ 'DELETE' | translate }}
+                                </button>
+                            </li>
+                            <li>
+                                <button class="dropdown-item text-secondary" (click)="onInsertControlMesureClick(row)"
+                                    title="{{ 'INSERT_CONTROL_MEASURE' | translate }}">
+                                    <i class="bi bi-save me-2"></i> {{ 'INSERT_CONTROL_MEASURE' | translate }}
+                                </button>
+                            </li>
+                        </ul>
+                    </div>
+                    @if(row.controlMeasure){
+                    <button class="btn btn-sm btn-outline-secondary w-100" (click)="toggleRow(row)"
+                        title="{{ 'CONTROL_MEASURES' | translate }}">
+                        <i class="bi" [ngClass]="isRowExpanded(row) ? 'bi-chevron-up' : 'bi-chevron-down'"></i>
+                    </button>
+                    }
+                </div>
+            </td>
+            <td class="factor-column" [attr.data-label]="'FACTOR' | translate">{{row.factor.description}}</td>
+            <td class="intensity-column" [attr.data-label]="'INTENSITY' | translate">{{row.intensity}}</td>
+            <td class="technique-column" [attr.data-label]="'TECHNIQUE' | translate">{{row.technique}}</td>
+            <td class="source-column" [attr.data-label]="'SOURCE' | translate">{{row.source}}</td>
+            <td class="exposure-column" [attr.data-label]="'EXPOSURE_TIME' | translate">
+                {{getExposureTimeEnumString(row.exposureTime) | translate}}</td>
+            <td class="harm-column" [attr.data-label]="'HARM' | translate">{{row.harm}}</td>
+            <td class="matrix-column" [attr.data-label]="'CHANCE' | translate">{{getMatrixEnumString(row.probability) |
+                translate}}</td>
+            <td class="matrix-column" [attr.data-label]="'SEVERITY' | translate">{{getMatrixEnumString(row.severity) |
+                translate}}</td>
+            <td [ngClass]="
+                {'danger': row.score && row.score == 5,
+                    'warn': (row.score && row.score == 4)
+                }" [attr.data-label]="'SCORE' | translate">
+                {{getRiskString(row.score || 100) | translate}}
+            </td>
+        </tr>
+        <!-- CONTROL MEASURES -->
+        @if (isRowExpanded(row)) {
+        <tr class="control-measures-subtable">
+            <td colspan="10" class="p-0 border-0">
+                <div class="p-3 bg-light m-2 rounded border">
+                    <h6 class="mb-3">{{ "CONTROL_MEASURES" | translate }}</h6>
+                    <table class="table table-sm table-bordered bg-white mb-0">
+                        <thead>
+                            <tr>
+                                <th class="actions-column-cm">{{ "ACTIONS" | translate }}</th>
+                                <th class="administrative-measure-column-cm">{{ "ADMINISTRATIVE_MEASURE" | translate }}
+                                </th>
+                                <!-- <th class="epi-column-cm">{{ "EPI" | translate }}</th> -->
+                                <th class="epc-column-cm">{{ "EPC" | translate }}</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @if (row.controlMeasure) {
+                            <tr>
+                                <td class="actions-column-cm">
+                                    <div class="actions-container">
+                                        <div class="dropdown w-100">
+                                            <button class="btn btn-sm btn-outline-secondary w-100" type="button"
+                                                data-bs-toggle="dropdown" aria-expanded="false">
+                                                <i class="bi bi-three-dots-vertical"></i>
+                                            </button>
+                                            <ul class="dropdown-menu">
+                                                <li>
+                                                    <button class="dropdown-item text-secondary"
+                                                        title="{{ 'EDIT' | translate }}">
+                                                        <i class="bi bi-pencil me-2"></i> {{ 'EDIT' | translate }}
+                                                    </button>
+                                                </li>
+                                                <li>
+                                                    <button class="dropdown-item text-secondary"
+                                                        title="{{ 'DELETE' | translate }}">
+                                                        <i class="bi bi-trash me-2"></i> {{ 'DELETE' | translate }}
+                                                    </button>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td>{{ row.controlMeasure!.administrativeMeasure }}</td>
+                                <td>{{ row.controlMeasure!.epc }}</td>
+                                }
+                        </tbody>
+                    </table>
+                </div>
+            </td>
+        </tr>
+        }
+        }
+    </tbody>
+</table>
+}

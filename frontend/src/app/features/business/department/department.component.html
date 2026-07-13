@@ -1,57 +1,31 @@
 <div class="container">
-  <app-dynamic-form
-    [title]="'DEPARTMENT' | translate"
-    [formGroup]="formGroup"
-    [onCreate]="handleCreate.bind(this)">
-    <div class="row">
-      <div class="col-md-6">
-        <div class="input-group mb-3">
-          <span class="input-group-text" id="basic-addon1">{{ 'DESCRIPTION' | translate }}</span>
-          <input type="text" class="form-control" placeholder="" aria-label="" aria-describedby="basic-addon1" formControlName="description">
+  <app-dynamic-form [title]="'DEPARTMENT' | translate" [formGroup]="formGroup" [onCreate]="handleCreate.bind(this)">
+    <div>
+      <div class="row">
+        <div class="col-md-6">
+          <div class="input-group mb-3">
+            <span class="input-group-text" id="basic-addon1">{{ 'NAME' | translate }}</span>
+            <input type="text" class="form-control" placeholder="" aria-label="" aria-describedby="basic-addon1"
+              formControlName="name">
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-6">
+          <div class="input-group mb-3">
+            <span class="input-group-text" id="basic-addon1">{{ 'DESCRIPTION' | translate }}</span>
+            <input type="text" class="form-control" placeholder="" aria-label="" aria-describedby="basic-addon1"
+              formControlName="description">
+          </div>
         </div>
       </div>
     </div>
   </app-dynamic-form>
   <div class="row">
     <div class="col-md-6">
-      <app-dynamic-table
-        [data]="dataTable"
-        [canEdit]="true"
-        (onEdit)="handleEdit($event)"
-      ></app-dynamic-table>
-
-      <!-- Bootstrap Pagination -->
-      @if (totalPages > 0) {
-        <nav aria-label="Department pagination">
-          <ul class="pagination">
-            <!-- Previous button -->
-            <li class="page-item" [class.disabled]="currentPage === 1">
-              <a class="page-link" href="javascript:void(0)" (click)="previousPage()" aria-label="Previous">
-                <span aria-hidden="true">&laquo;</span>
-              </a>
-            </li>
-            <!-- Page numbers -->
-            @for (page of getPageNumbers(); track page) {
-              <li class="page-item" [class.active]="page === currentPage">
-                <a class="page-link" href="javascript:void(0)" (click)="goToPage(page)">{{ page }}</a>
-              </li>
-            }
-            <!-- Next button -->
-            <li class="page-item" [class.disabled]="currentPage === totalPages">
-              <a class="page-link" href="javascript:void(0)" (click)="nextPage()" aria-label="Next">
-                <span aria-hidden="true">&raquo;</span>
-              </a>
-            </li>
-          </ul>
-        </nav>
-      }
-
-      <!-- Pagination info -->
-      @if (totalItems > 0) {
-        <div class="text-muted small mt-2">
-          {{ 'SHOWING' | translate }} {{ (currentPage - 1) * pageSize + 1 }} - {{ Math.min(currentPage * pageSize, totalItems) }} {{ 'OF' | translate }} {{ totalItems }} {{ 'ENTRIES' | translate }}
-        </div>
-      }
+      <app-dynamic-table [data]="dataTable" [canEdit]="true" (onEdit)="handleEdit($event)"
+        (onPageChange)="fetchDepartments($event)" [totalPages]="totalPages" [totalItems]="totalItems"
+        [currentPage]="currentPage" [pageSize]="pageSize"></app-dynamic-table>
     </div>
   </div>
 </div>

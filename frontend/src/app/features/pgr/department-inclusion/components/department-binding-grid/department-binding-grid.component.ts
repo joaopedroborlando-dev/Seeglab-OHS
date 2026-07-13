@@ -40,6 +40,7 @@ export class DepartmentBindingGridComponent implements OnInit, OnDestroy {
   inventory?: IHazardInventoryDto;
   departmentControl = new FormControl('');
   roleControl = new FormControl({ value: '', disabled: true });
+  nameControl = new FormControl('', { nonNullable: true });
   roleData: IRoleDto[] = [];
   departmentData: IDepartmentDto[] = [];
   selectedDepartment: IDepartment | null = null;
@@ -59,7 +60,7 @@ export class DepartmentBindingGridComponent implements OnInit, OnDestroy {
       this.deptAssessmentSubscription.unsubscribe();
   }
 
-  //-----------------Load section---------------------------------
+  //#region-----------------Load section---------------------------------
   async fetchDepartments(searchTerm: string = ''): Promise<void> {
     const paginationOptions: IPaginationOptions = {
       limit: 10,
@@ -101,15 +102,16 @@ export class DepartmentBindingGridComponent implements OnInit, OnDestroy {
   }
   //--------------------End load section-------------------------
 
-  //-----------------Department handlers section------------------
+  //#region -----------------Department handlers section------------------
   onDepartmentSelected(department: IDepartmentDto): void {
-    if (department && department.id && department.description) {
+    if (department && department.id && department.name) {
       this.selectedDepartment = {
         id: department.id,
+        name: department.name,
         description: department.description ?? "",
         roles: []
       };
-      this.departmentControl.setValue(department.description);
+      this.departmentControl.setValue(department.name);
       // Reset role selection
       this.roleControl.setValue('');
       this.roleData = [];
@@ -120,6 +122,7 @@ export class DepartmentBindingGridComponent implements OnInit, OnDestroy {
 
   onDepartmentSearch(searchTerm: string): void {
     if (this.selectedDepartment) return;
+    console.log("Chamouuuu")
     this.fetchDepartments(searchTerm);
   }
 
@@ -156,11 +159,11 @@ export class DepartmentBindingGridComponent implements OnInit, OnDestroy {
 
   //----------------End Department handlers section---------------------
 
-  //-------------------Role handlers section----------------------------
+  //#region -------------------Role handlers section----------------------------
   onRoleSelected(role: IRoleDto): void {
-    if (role && role.id && role.description) {
+    if (role && role.id && role.name) {
       this.selectedRole = role;
-      this.roleControl.setValue(role.description);
+      this.roleControl.setValue(role.name);
     }
   }
 
@@ -170,10 +173,15 @@ export class DepartmentBindingGridComponent implements OnInit, OnDestroy {
 
   addRoleToList(): void {
     const roleStr = this.roleControl.value;
-    const role = this.roleData?.find(el => el.description === roleStr);
-    if (role && !this.rolesToBind.some(el => el.id === role.id)) {
+    const role = this.roleData?.find(el => el.name === roleStr);
+    if (role) {
+      if (this.rolesToBind.some(el => el.id === role.id)) {
+        this.toastService.warning('ALREADY_BOUND');
+        this.roleControl.reset();
+        return;
+      }
       this.rolesToBind.push(role);
-      this.roleControl.setValue(null);
+      this.roleControl.reset();
     }
   }
 
@@ -185,7 +193,7 @@ export class DepartmentBindingGridComponent implements OnInit, OnDestroy {
   }
   //--------------------End Role handlers section------------------------
 
-  //----------------------------Submit section---------------------------
+  //#region----------------------------Submit section---------------------------
   onSuccess(): void {
     this.cleanDepartment();
     this.cleanRole();
@@ -205,6 +213,7 @@ export class DepartmentBindingGridComponent implements OnInit, OnDestroy {
     const newDeptAssessment: IWorkUnitDto = {
       departmentId: this.selectedDepartment.id,
       inventoryId: inventory.id,
+      name: this.nameControl.value,
       roles: this.rolesToBind
     }
     try {
@@ -213,8 +222,8 @@ export class DepartmentBindingGridComponent implements OnInit, OnDestroy {
       inventory.workUnits?.push(savedWorkUnitsDto);
       this.depAssessmentService.updateHazardInventoryState({ workUnits: inventory.workUnits });
       this.onSuccess();
-    } catch (error) {
-      this.toastService.error('ERROR');
+    } catch (error: any) {
+      this.toastService.error(error.error);
     }
   }
   //----------------------End submit section ----------------------------

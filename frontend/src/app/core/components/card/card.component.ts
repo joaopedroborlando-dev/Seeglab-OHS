@@ -7,12 +7,15 @@ import { Component, EventEmitter, Input, Output } from '@angular/core';
     <div class="card" style="margin-bottom: 10px">
       <div class="card-body">
         @if(cardTitle){
-          <h5 class="card-title" style="padding: 5px">{{cardTitle}}</h5>
+        <h5 class="card-title" style="padding: 5px">{{cardTitle}}</h5>
+        }
+        @if(cradSubTitle){
+        <h6 style="padding: 5px; color: gray;">{{cradSubTitle}}</h6>
         }
         <div class="row">
           <div class="col-9">
             @if(cartBodyText){
-              <span>{{cartBodyText}}</span>
+            <small style="padding: 5px; font-size: 12px; color: gray;">{{cartBodyText}}</small>
             }
           </div>
           @if(enableActionBtn){
@@ -42,6 +45,7 @@ export class CardComponent {
   @Input() btnIconName: string = "bi bi-chevron-right";
   @Output() onAction: EventEmitter<string> = new EventEmitter();
   @Output() onDeleteAction: EventEmitter<string> = new EventEmitter();
+  @Input() cradSubTitle: string = "";
 
   onButtonClick() {
     this.onAction.emit(this.cartId);

@@ -3,7 +3,8 @@ import { IDepartmentAssessment } from './IDepartmentAssessment';
 export interface IHazardInventory {
   id?: number;
   userId?: string;
-  description: string;
+  name: string;
+  description: string | null;
   createdAt: number | null;
   departmentAssessments: IDepartmentAssessment[];
 }

@@ -2,12 +2,18 @@
   <!-- Department row -->
   <div class="row">
     <form class="row g-3 needs-validation" (ngSubmit)="onSubmit()">
+
+      <div class="input-group">
+        <label for="nameControl" class="input-group-text">{{ 'NAME' | translate }}</label>
+        <input type="text" id="nameControl" class="form-control" [formControl]="nameControl">
+      </div>
+
       <app-searchable-dropdown inputId="departmentDataList" listId="departmentList" labelText="DEPARTMENT"
         [control]="departmentControl" [items]="departmentData" [showBindButton]="true" [iconName]="iconName"
         (search)="onDepartmentSearch($event)" (selectionChange)="onDepartmentSelected($event)"
         (bindClick)="onDepartmentBindClick()">
       </app-searchable-dropdown>
-      <app-box-list [items]="rolesToBind" [bindLabel]="'description'" (add)="addRoleToList()"
+      <app-box-list [items]="rolesToBind" [bindLabel]="'name'" (add)="addRoleToList()"
         (remove)="deleteRoleToList($event)">
         <app-searchable-dropdown inputId="roleDataList" listId="roleList" labelText="ROLE" [control]="roleControl"
           [items]="roleData || []" (search)="onRoleSearch($event)" (selectionChange)="onRoleSelected($event)"

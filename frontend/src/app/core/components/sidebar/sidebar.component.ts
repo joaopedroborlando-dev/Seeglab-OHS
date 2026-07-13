@@ -14,6 +14,7 @@ export class SidebarComponent {
     isSidebarOpen = false;
     businessMenuOpen = false;
     pgrMenuOpen = false;
+    epiMenuOpen = false;
 
     toggleSidebar() {
         this.isSidebarOpen = !this.isSidebarOpen;
@@ -25,5 +26,9 @@ export class SidebarComponent {
 
     togglePgrMenu() {
         this.pgrMenuOpen = !this.pgrMenuOpen;
+    }
+
+    toggleEpiMenu() {
+        this.epiMenuOpen = !this.epiMenuOpen;
     }
 }

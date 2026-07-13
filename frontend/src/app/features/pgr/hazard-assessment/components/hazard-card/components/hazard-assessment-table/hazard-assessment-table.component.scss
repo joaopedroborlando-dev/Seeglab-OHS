@@ -1,0 +1,143 @@
+.risk-table {
+    width: 100%;
+    border-collapse: collapse;
+    table-layout: fixed;
+}
+
+th {
+    font-weight: bold;
+    background-color: var(--color-background-light);
+    border: 1px solid var(--color-border);
+    padding: 8px 12px;
+    text-align: left;
+}
+
+td {
+    border: 1px solid var(--color-border);
+    padding: 8px 12px;
+    vertical-align: middle;
+    font-size: small;
+    align-content: center;
+}
+
+.hazard-cell {
+    background-color: var(--color-background-light);
+}
+
+.actions-column {
+    width: 6%;
+}
+
+.actions-column-cm {
+    width: 3%;
+}
+
+.harm-column {
+    width: 20%;
+}
+
+.danger {
+    background-color: var(--color-danger-light);
+}
+
+.warn {
+    background-color: var(--color-warning-light);
+}
+
+.actions-container {
+    display: flex;
+    gap: 0.3rem;
+}
+
+@media (max-width: 1500px) {
+    .actions-container {
+        flex-direction: column;
+    }
+}
+
+.administrative-measure-column-cm {
+    width: 30%;
+}
+
+.epi-column-cm {
+    width: 5%;
+}
+
+.epc-column-cm {
+    width: 20%;
+}
+
+.actions-container-cm {
+    width: 3%;
+    display: flex;
+    gap: 0.3rem;
+}
+
+.table-wrapper {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+}
+
+
+@media (max-width: 1200px) {
+    thead tr th {
+        font-size: small;
+    }
+}
+
+@media (max-width: 1000px) {
+
+    thead {
+        display: none;
+    }
+
+    .actions-column,
+    .actions-column-cm,
+    .harm-column {
+        width: 100%;
+    }
+
+    tbody,
+    tr,
+    td {
+        display: block;
+        width: 100%;
+    }
+
+    tr {
+        margin-bottom: 1rem;
+        border: 1px solid #dee2e6;
+        border-radius: 0.5rem;
+        padding: 0.75rem;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+    }
+
+    td {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 0.5rem 0.5rem;
+        border: none;
+        border-bottom: 1px solid #f1f1f1;
+        text-align: right;
+
+        &:first-child {
+            border-top-left-radius: 0.5rem;
+            border-top-right-radius: 0.5rem;
+        }
+
+        &:last-child {
+            border-bottom: none;
+            border-bottom-left-radius: 0.5rem;
+            border-bottom-right-radius: 0.5rem;
+        }
+
+        &::before {
+            content: attr(data-label);
+            font-weight: 600;
+            text-align: left;
+            padding-right: 1rem;
+            flex-shrink: 0;
+        }
+    }
+}

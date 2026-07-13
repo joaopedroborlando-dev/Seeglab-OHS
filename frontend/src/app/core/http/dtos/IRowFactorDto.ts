@@ -28,5 +28,5 @@ export default interface IRowFactorDto {
   score?: MatrixEnum;
   hazardAssessmentId?: number;
   hazardId?: number;
-  controlMeasures?: IControlMeasureDto[];
+  controlMeasure?: IControlMeasureDto;
 }

@@ -1,0 +1,11 @@
+.card-container {
+    overflow-y: auto;
+    max-height: 320px;
+    margin-top: 32px;
+}
+
+@media (min-width: 900px) {
+    .card-container {
+        max-height: 800px;
+    }
+}

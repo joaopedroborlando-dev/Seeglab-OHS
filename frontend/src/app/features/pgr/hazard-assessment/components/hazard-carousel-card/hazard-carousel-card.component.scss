@@ -1,5 +1,26 @@
-.carousel-card{
+.carousel-card {
   border: solid 1px #919191;
   padding: 16px;
   border-radius: 16px;
+  container-type: inline-size;
+}
+
+.header-info-row {
+  .header-col {
+    flex: 0 0 auto;
+    width: 33.33%;
+  }
+}
+
+@container (max-width: 1000px) {
+  .header-info-row {
+    .header-col {
+      width: 100%;
+      margin-bottom: 8px;
+
+      &:last-child {
+        margin-bottom: 0;
+      }
+    }
+  }
 }

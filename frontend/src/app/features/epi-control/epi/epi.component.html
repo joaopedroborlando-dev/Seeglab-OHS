@@ -1,0 +1,90 @@
+<div class="container">
+  <div class="row">
+    <div class="col-12 col-md-10">
+      <h3>{{'EPI' | translate}}</h3>
+    </div>
+    <div class="col-12 col-md-2 text-end">
+      <button class="btn btn-success" (click)="toggleDrawer()">
+        {{ 'NEW_EPI' | translate }}
+      </button>
+    </div>
+  </div>
+  <div class="row">
+    <form [formGroup]="epiSearchFormGroup">
+      <div class="row">
+        <div class="col-12 col-md-4">
+          <div class="input-group mb-3">
+            <span class="input-group-text">{{ 'DESCRIPTION' | translate }}</span>
+            <input type="text" class="form-control" formControlName="description">
+          </div>
+        </div>
+        <div class="col-12 col-md-3">
+          <div class="input-group mb-3">
+            <span class="input-group-text">{{ 'EXPIRATION_START' | translate }}</span>
+            <input type="date" class="form-control" formControlName="expirationStart">
+          </div>
+        </div>
+        <div class="col-12 col-md-3">
+          <div class="input-group mb-3">
+            <span class="input-group-text">{{ 'EXPIRATION_END' | translate }}</span>
+            <input type="date" class="form-control" formControlName="expirationEnd">
+          </div>
+        </div>
+        <div class="col-12 col-md-2 text-end">
+          <button class="btn btn-success me-2" (click)="handleClear()">
+            {{ 'CLEAR' | translate }}
+          </button>
+          <button class="btn btn-success" (click)="handleSearch()">
+            {{ 'SEARCH' | translate }}
+          </button>
+        </div>
+      </div>
+    </form>
+  </div>
+  <div class="row">
+    <div class="col-md-12">
+      <app-dynamic-table [data]="dataTable" [canEdit]="true" [canDelete]="true" (onEdit)="handleEdit($event)"
+        (onDelete)="handleDelete($event)" (onPageChange)="fetchEpis($event)" [totalPages]="totalPages"
+        [totalItems]="totalItems" [currentPage]="currentPage" [pageSize]="pageSize"></app-dynamic-table>
+    </div>
+  </div>
+  <app-side-drawer [isOpen]="drawerOpen()" title="{{ 'NEW_EPI' | translate }}" (closed)="handleCancelEdit()">
+    <form [formGroup]="formGroup">
+      <div class="row">
+        <div class="col-md-12">
+          <div class="input-group mb-3">
+            <span class="input-group-text">{{ 'NAME' | translate }}</span>
+            <input type="text" class="form-control" formControlName="name">
+          </div>
+        </div>
+        <div class="col-md-12">
+          <div class="input-group mb-3">
+            <span class="input-group-text">{{ 'CA_NUMBER' | translate }}</span>
+            <input type="text" class="form-control" formControlName="caNumber">
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-12">
+          <div class="input-group mb-3">
+            <span class="input-group-text">{{ 'CA_EXPIRATION' | translate }}</span>
+            <input type="date" class="form-control" formControlName="caExpiration">
+          </div>
+        </div>
+        <div class="col-md-12">
+          <div class="input-group mb-3">
+            <span class="input-group-text">{{ 'MANUFACTURER' | translate }}</span>
+            <input type="text" class="form-control" formControlName="manufacturer">
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-6">
+          <button class="btn btn-success" (click)="handleCreate()">
+            {{ 'SAVE' | translate }}
+          </button>
+        </div>
+      </div>
+    </form>
+  </app-side-drawer>
+</div>

@@ -24,6 +24,14 @@ import { ToastService } from '../../../../../core/services/toast.service';
       <div class="row">
         <div class="col-md-6">
           <div class="input-group mb-3">
+            <span class="input-group-text" id="basic-addon1">{{ 'NAME' | translate }}</span>
+            <input type="text" class="form-control" placeholder="" aria-label="" aria-describedby="basic-addon1" formControlName="name">
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-6">
+          <div class="input-group mb-3">
             <span class="input-group-text" id="basic-addon1">{{ 'DESCRIPTION' | translate }}</span>
             <input type="text" class="form-control" placeholder="" aria-label="" aria-describedby="basic-addon1" formControlName="description">
           </div>
@@ -42,7 +50,8 @@ export class CreateHazardInventoryComponent {
   translateService: TranslateService = inject(TranslateService);
 
   formGroup = new FormGroup({
-    description: new FormControl('', [Validators.required]),
+    description: new FormControl(''),
+    name: new FormControl('', [Validators.required]),
   });
   hazardInventory !: IHazardInventory;
 
@@ -53,10 +62,11 @@ export class CreateHazardInventoryComponent {
     }
 
     const inventory = await this.apiService.postData<IHazardInventory>("pgr/inventory/create", {
+      name: this.formGroup.get("name")?.value,
       description: this.formGroup.get("description")?.value
     })
     if (inventory != null && inventory.id) {
-      await this.router.navigate(['/department-inclusion', inventory.id]);
+      await this.router.navigate(['/pgr/work-unit-inclusion', inventory.id]);
     }
   }
 

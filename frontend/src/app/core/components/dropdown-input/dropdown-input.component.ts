@@ -33,7 +33,9 @@ export interface DropdownOption {
   standalone: true,
   imports: [NgClass, TranslatePipe],
   template: `
-    <label for="inputId" class="form-label">{{"FACTOR" | translate}}</label>
+    @if (label) {
+      <label for="inputId" class="form-label">{{ label | translate }}</label>
+    }
     <div class="dropdown-input-container position-relative">
       <input
         type="text"
@@ -62,7 +64,7 @@ export interface DropdownOption {
     <!--        </li>-->
     
     <!-- Options -->
-    @for (option of options; track option; let i = $index) {
+    @for (option of options; track option.id; let i = $index) {
       <li
         class="dropdown-item"
         [class.active]="i === selectedIndex"
@@ -103,6 +105,7 @@ export interface DropdownOption {
 })
 export class DropdownInputComponent implements ControlValueAccessor, OnDestroy {
   // Input properties
+  @Input() label: string = '';
   @Input() inputId: string = '';
   @Input() placeholder: string = '';
   @Input() options: DropdownOption[] = [];

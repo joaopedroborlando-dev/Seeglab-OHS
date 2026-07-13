@@ -76,7 +76,7 @@ export class SearchableDropdownComponent implements OnInit, OnDestroy {
   @Input() items: any[] = [];
   @Input() control!: FormControl;
   @Input() showBindButton = false;
-  @Input() labelKey = 'description';
+  @Input() labelKey = 'name';
   @Input() valueKey = 'id';
 
   @Output() search = new EventEmitter<string>();
@@ -93,7 +93,7 @@ export class SearchableDropdownComponent implements OnInit, OnDestroy {
       distinctUntilChanged(),
       takeUntil(this.destroy$)
     ).subscribe(value => {
-      if (this.control.disabled) {
+      if (this.control.disabled || value == null) {
         return;
       }
       if (this.selectedItem) {

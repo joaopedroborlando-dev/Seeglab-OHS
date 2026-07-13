@@ -1,0 +1,13 @@
+<div class="drawer-backdrop" [class.show]="isOpen()" (click)="close()"></div>
+
+<div class="drawer-container" [class.open]="isOpen()">
+  <div class="drawer-header">
+    <h5 class="drawer-title">{{ title() }}</h5>
+    <button type="button" class="close-btn" (click)="close()" aria-label="Close">
+      &times;
+    </button>
+  </div>
+  <div class="drawer-body">
+    <ng-content></ng-content>
+  </div>
+</div>

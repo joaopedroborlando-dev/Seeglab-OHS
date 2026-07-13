@@ -1,43 +1,41 @@
 <div class="d-flex justify-content-center flex-column align-items-center">
   <div class="row">
     @if (title.length > 0) {
-      <div class="title-container">
-        <span class="title">
-          {{ title | translate }}
-        </span>
-      </div>
+    <div class="title-container">
+      <span class="title">
+        {{ title | translate }}
+      </span>
+    </div>
     }
   </div>
   <div class="item-list-container">
     <ng-content></ng-content>
     <div class="row">
-      <div class="col-md-1">
-        <div class="button-controls">
-          <button class="btn btn-outline-success" style="margin-bottom: 5px;" type="button" (click)="addItem()">
-            <i class="bi bi-plus-lg" ></i>
+      <div class="col-12 col-lg-1">
+        <div class="button-controls d-flex flex-row flex-lg-column">
+          <button class="btn btn-outline-success me-2 me-lg-0 mb-lg-2" type="button" (click)="addItem()">
+            <i class="bi bi-plus-lg"></i>
           </button>
-          <button class="btn btn-outline-danger" type="button" (click)="removeItem()" [disabled]="selectedItemIndex < 0">
-            <i class="bi bi-trash-fill" ></i>
+          <button class="btn btn-outline-danger" type="button" (click)="removeItem()"
+            [disabled]="selectedItemIndex < 0">
+            <i class="bi bi-trash-fill"></i>
           </button>
         </div>
       </div>
-      <div class="col-md-11">
+      <div class="col-12 col-lg-11">
         <div class="list-box">
           @if (items.length > 0) {
-            <ul>
-              @for (item of items; track trackByFn(i, item); let i = $index) {
-                <li
-                  class="item"[class.selected]="i === selectedItemIndex"
-                  (click)="selectItem(i)">
-                  <div class="item-description">{{ item[bindLabel] }}</div>
-                </li>
-              }
-            </ul>
+          <ul>
+            @for (item of items; track trackByFn(i, item); let i = $index) {
+            <li class="item" [class.selected]="i === selectedItemIndex" (click)="selectItem(i)">
+              <div class="item-description">{{ item[bindLabel] }}</div>
+            </li>
+            }
+          </ul>
           } @else {
-            <div class="no-items">{{"NO_ITEMS" | translate}}</div>
+          <div class="no-items">{{ "NO_ITEMS" | translate }}</div>
           }
         </div>
       </div>
     </div>
   </div>
-</div>
