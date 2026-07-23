@@ -5,9 +5,9 @@ import User from "./User";
 export default class Organization {
 
     @PrimaryColumn({ type: 'text' })
-    organizationId: string;
+    id: string;
 
-    @Column({ type: 'text' ,nullable: true })
+    @Column({ type: 'text', nullable: true })
     name: string;
 
     @Column({ type: 'text', nullable: true })

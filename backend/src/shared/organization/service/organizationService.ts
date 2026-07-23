@@ -6,12 +6,12 @@ const createOrganization = async (dto: any): Promise<void> => {
     const { organizationId, userId, name } = dto;
     let organization = await AppDataSource.getRepository(Organization)
         .createQueryBuilder("organization")
-        .where("organization.organizationId = :organizationId", { organizationId })
+        .where("organization.id = :organizationId", { organizationId })
         .getOne();
 
     if (!organization) {
         organization = new Organization();
-        organization.organizationId = organizationId;
+        organization.id = organizationId;
         organization.name = name ?? '';
         organization = await AppDataSource.manager.save(organization);
     }

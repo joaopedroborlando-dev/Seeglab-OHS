@@ -22,10 +22,10 @@ export const signUp = async (req: Request, res: Response): Promise<any> => {
             throw new Error('USER_ALREADY_EXISTS');
         }
 
-        let organization = await organizationRepository.findOneBy({ organizationId: document });
+        let organization = await organizationRepository.findOneBy({ id: document });
         if (!organization) {
             organization = new Organization();
-            organization.organizationId = document;
+            organization.id = document;
             organization.name = '';
             organization = await organizationRepository.save(organization);
         }
@@ -39,8 +39,8 @@ export const signUp = async (req: Request, res: Response): Promise<any> => {
 
         await queryRunner.commitTransaction();
 
-        const token = signToken({ userId: user.id, organizationId: organization.organizationId });
-        res.status(201).json({ token, organization: organization.organizationId, userId: user.id });
+        const token = signToken({ userId: user.id, organizationId: organization.id });
+        res.status(201).json({ token, organization: organization.id, userId: user.id });
 
     } catch (e: any) {
         await queryRunner.rollbackTransaction();
@@ -66,10 +66,10 @@ export const login = async (req: Request, res: Response): Promise<any> => {
         const isMatch = await user.comparePassword(password);
         if (!isMatch) throw new Error('INVALID_CREDENTIALS');
 
-        if (!user.organization?.organizationId) throw new Error('INVALID_CREDENTIALS');
+        if (!user.organization?.id) throw new Error('INVALID_CREDENTIALS');
 
-        const token = signToken({ userId: user.id, organizationId: user.organization.organizationId });
-        res.json({ userId: user.id, token, organization: user.organization.organizationId });
+        const token = signToken({ userId: user.id, organizationId: user.organization.id });
+        res.json({ userId: user.id, token, organization: user.organization.id });
     } catch (error: any) {
         res.status(401).json({ error: error.message });
     }
