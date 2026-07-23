@@ -21,13 +21,13 @@
         <div class="col-12 col-md-3">
           <div class="input-group mb-3">
             <span class="input-group-text">{{ 'EXPIRATION_START' | translate }}</span>
-            <input type="date" class="form-control" formControlName="expirationStart">
+            <input type="text" mask="d0/M0/0000" [dropSpecialCharacters]="false" placeholder="DD/MM/YYYY" class="form-control" formControlName="expirationStart">
           </div>
         </div>
         <div class="col-12 col-md-3">
           <div class="input-group mb-3">
             <span class="input-group-text">{{ 'EXPIRATION_END' | translate }}</span>
-            <input type="date" class="form-control" formControlName="expirationEnd">
+            <input type="text" mask="d0/M0/0000" [dropSpecialCharacters]="false" placeholder="DD/MM/YYYY" class="form-control" formControlName="expirationEnd">
           </div>
         </div>
         <div class="col-12 col-md-2 text-end">
@@ -68,7 +68,7 @@
         <div class="col-md-12">
           <div class="input-group mb-3">
             <span class="input-group-text">{{ 'CA_EXPIRATION' | translate }}</span>
-            <input type="date" class="form-control" formControlName="caExpiration">
+            <input type="text" mask="d0/M0/0000" [dropSpecialCharacters]="false" placeholder="DD/MM/YYYY" class="form-control" formControlName="caExpiration">
           </div>
         </div>
         <div class="col-md-12">

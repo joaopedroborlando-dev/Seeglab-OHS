@@ -1,6 +1,7 @@
 import { Component, inject, OnInit, signal } from '@angular/core';
 import { TranslateModule } from '@ngx-translate/core';
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { NgxMaskDirective } from 'ngx-mask';
 import IDynamicTableData from '../../../core/models/interfaces/IDynamicTableData';
 import { DynamicTableComponent } from '../../../core/components/dynamic-table/dynamic-table.component';
 import { ApiService } from '../../../core/services/api.service';
@@ -9,6 +10,7 @@ import IEpiDto from '../../../core/http/dtos/IEpiDto';
 import { IPaginatedResponse, IPaginationOptions } from '../../../core/http/dtos/PaginationTypes';
 import { SideDrawerComponent } from "../../../core/components/side-drawer/side-drawer.component";
 import { ModalService } from '../../../core/services/modal.service';
+import { isValidDate } from '../../../shared/utils/validationHelpers';
 
 @Component({
   selector: 'app-epi',
@@ -17,7 +19,8 @@ import { ModalService } from '../../../core/services/modal.service';
     FormsModule,
     ReactiveFormsModule,
     DynamicTableComponent,
-    SideDrawerComponent
+    SideDrawerComponent,
+    NgxMaskDirective
   ],
   templateUrl: './epi.component.html',
   styleUrl: './epi.component.scss'
@@ -51,8 +54,8 @@ export class EpiComponent implements OnInit {
 
   epiSearchFormGroup = new FormGroup({
     description: new FormControl<string | null>(null),
-    expirationStart: new FormControl<Date | null>(null),
-    expirationEnd: new FormControl<Date | null>(null),
+    expirationStart: new FormControl<string | null>(null),
+    expirationEnd: new FormControl<string | null>(null),
   });
 
   async ngOnInit(): Promise<void> {
@@ -66,9 +69,14 @@ export class EpiComponent implements OnInit {
     const payload: IEpiDto = {
       name: name,
       caNumber: this.formGroup.get("caNumber")?.value ?? "",
-      caExpiration: this.formGroup.get("caExpiration")?.value
-        ? new Date(this.formGroup.get("caExpiration")?.value as string)
-        : undefined,
+      caExpiration: (() => {
+        const val = this.formGroup.get("caExpiration")?.value as string;
+        if (val && val.length === 10) {
+          const [day, month, year] = val.split('/');
+          return new Date(`${year}-${month}-${day}T00:00:00`);
+        }
+        return undefined;
+      })(),
       manufacturer: this.formGroup.get("manufacturer")?.value ?? "",
     };
 
@@ -100,8 +108,16 @@ export class EpiComponent implements OnInit {
   getFilter() {
     const filter: any = {};
     filter.description = this.epiSearchFormGroup.get("description")?.value;
-    filter.expirationStart = this.epiSearchFormGroup.get("expirationStart")?.value;
-    filter.expirationEnd = this.epiSearchFormGroup.get("expirationEnd")?.value;
+    const expStartStr = this.epiSearchFormGroup.get("expirationStart")?.value;
+    if (expStartStr && expStartStr.length === 10) {
+      const [d, m, y] = expStartStr.split('/');
+      filter.expirationStart = `${y}-${m}-${d}`;
+    }
+    const expEndStr = this.epiSearchFormGroup.get("expirationEnd")?.value;
+    if (expEndStr && expEndStr.length === 10) {
+      const [d, m, y] = expEndStr.split('/');
+      filter.expirationEnd = `${y}-${m}-${d}`;
+    }
     return filter;
   }
 
@@ -144,7 +160,10 @@ export class EpiComponent implements OnInit {
     this.formGroup.get("manufacturer")?.setValue(epiObj.manufacturer ?? "");
     if (epiObj.caExpiration) {
       const d = new Date(epiObj.caExpiration);
-      const formatted = d.toISOString().split('T')[0];
+      const day = d.getDate().toString().padStart(2, '0');
+      const month = (d.getMonth() + 1).toString().padStart(2, '0');
+      const year = d.getFullYear();
+      const formatted = `${day}/${month}/${year}`;
       this.formGroup.get("caExpiration")?.setValue(formatted);
     }
     this.editItemId = id;
@@ -183,6 +202,35 @@ export class EpiComponent implements OnInit {
   }
 
   handleSearch() {
+    const expStartStr = this.epiSearchFormGroup.get("expirationStart")?.value;
+    const expEndStr = this.epiSearchFormGroup.get("expirationEnd")?.value;
+
+    let startObj: Date | null = null;
+    let endObj: Date | null = null;
+
+    if (expStartStr) {
+      if (!isValidDate(expStartStr)) {
+        this.toastService.error("INVALID_DATE_FORMAT");
+        return;
+      }
+      const [d, m, y] = expStartStr.split('/');
+      startObj = new Date(parseInt(y, 10), parseInt(m, 10) - 1, parseInt(d, 10));
+    }
+
+    if (expEndStr) {
+      if (!isValidDate(expEndStr)) {
+        this.toastService.error("INVALID_DATE_FORMAT");
+        return;
+      }
+      const [d, m, y] = expEndStr.split('/');
+      endObj = new Date(parseInt(y, 10), parseInt(m, 10) - 1, parseInt(d, 10));
+    }
+
+    if (startObj && endObj && startObj > endObj) {
+      this.toastService.error("START_DATE_GREATER_THAN_END_DATE");
+      return;
+    }
+
     this.currentPage = 1;
     this.fetchEpis(this.currentPage);
   }
