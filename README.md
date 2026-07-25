@@ -1,5 +1,12 @@
 # Seeglab OSH - Projeto Fullstack
-Este projeto cosiste em uma aplicação web para gerenciamento de Segurança e Saúde Ocupacional e como forma de aplicar meus   conhecimentos em desenvolvimento de software. O projeto foi desenvolvido em Node.js com TypeScript e um Frontend em Angular.
+Este projeto cosiste em uma aplicação web para gerenciamento de Segurança e Saúde Ocupacional baseado nos requisitos das Normas Regulamentadoras (NRs). O projeto foi desenvolvido em Node.js com TypeScript e Frontend em Angular.
+
+Os principais consceitos e funcionalidades implementados no projeto são:
+- Utilização de services com Subjects do RxJS para comunicação entre componentes;
+- Autenticação JWT; Proteção das rotas com AuthGuard;
+- Criação de componentes reutilizáveis sem dependência externa;
+- Aplicação de princípios SOLID;
+- Mapeamento do banco com TypeORM;
 
 ## 🛠 Tecnologias Utilizadas
 
