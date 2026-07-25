@@ -1,7 +1,7 @@
 import { Component, inject, OnDestroy, OnInit } from '@angular/core';
 import { Subscription } from 'rxjs';
 import { IDepartmentAssessment } from '../../../../../core/models/interfaces/IDepartmentAssessment';
-import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { FormControl, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { IPaginatedResponse, IPaginationOptions } from '../../../../../core/http/dtos/PaginationTypes';
 import IDepartmentDto from '../../../../../core/http/dtos/IDepartmentDto';
 import { ApiService } from '../../../../../core/services/api.service';
@@ -40,7 +40,7 @@ export class DepartmentBindingGridComponent implements OnInit, OnDestroy {
   inventory?: IHazardInventoryDto;
   departmentControl = new FormControl('');
   roleControl = new FormControl({ value: '', disabled: true });
-  nameControl = new FormControl('', { nonNullable: true });
+  nameControl = new FormControl('', { nonNullable: true, validators: [Validators.required] });
   roleData: IRoleDto[] = [];
   departmentData: IDepartmentDto[] = [];
   selectedDepartment: IDepartment | null = null;
@@ -204,6 +204,7 @@ export class DepartmentBindingGridComponent implements OnInit, OnDestroy {
       !this.selectedDepartment
       || !inventory
       || this.rolesToBind.length === 0
+      || !this.nameControl.valid
     ) {
       this.toastService.warning('INCOMPLETE_DATA');
       return;
