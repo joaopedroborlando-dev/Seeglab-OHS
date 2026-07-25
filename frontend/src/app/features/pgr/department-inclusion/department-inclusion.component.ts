@@ -61,7 +61,6 @@ export class DepartmentInclusionComponent implements OnInit, OnDestroy {
       // set hazard inventory state
       this.depAssessmentService.setHazardInventoryState({
         id: this.inventory?.id ?? undefined,
-        businessId: this.inventory.businessId,
         name: this.inventory.name,
         description: this.inventory?.description,
         createdAt: this.inventory?.createdAt,

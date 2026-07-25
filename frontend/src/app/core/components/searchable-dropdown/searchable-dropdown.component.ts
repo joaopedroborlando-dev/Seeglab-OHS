@@ -93,7 +93,8 @@ export class SearchableDropdownComponent implements OnInit, OnDestroy {
       distinctUntilChanged(),
       takeUntil(this.destroy$)
     ).subscribe(value => {
-      if (this.control.disabled || value == null) {
+      console.log(value);
+      if (this.control.disabled || value == null || value === '') {
         return;
       }
       if (this.selectedItem) {
@@ -123,8 +124,6 @@ export class SearchableDropdownComponent implements OnInit, OnDestroy {
   }
 
   selectItem(item: any): void {
-    const label = this.getItemLabel(item);
-    // this.control.setValue(label);
     this.selectionChange.emit(item);
     this.showDropdown = false;
     this.selectedItem = true;

@@ -122,7 +122,6 @@ export class DepartmentBindingGridComponent implements OnInit, OnDestroy {
 
   onDepartmentSearch(searchTerm: string): void {
     if (this.selectedDepartment) return;
-    console.log("Chamouuuu")
     this.fetchDepartments(searchTerm);
   }
 
@@ -136,7 +135,7 @@ export class DepartmentBindingGridComponent implements OnInit, OnDestroy {
     this.selectedRole = null;
     this.roleData = [];
     this.iconName = 'bi bi-link';
-    this.fetchDepartments();
+    this.nameControl.reset();
   }
 
   cleanRole(): void {
@@ -201,7 +200,6 @@ export class DepartmentBindingGridComponent implements OnInit, OnDestroy {
 
   async onSubmit(): Promise<void> {
     const inventory = this.depAssessmentService.getHazardInventoryState();
-    console.log(inventory, this.selectedDepartment, this.rolesToBind.length);
     if (
       !this.selectedDepartment
       || !inventory
