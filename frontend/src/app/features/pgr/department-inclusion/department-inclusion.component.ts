@@ -11,6 +11,7 @@ import { Subscription } from 'rxjs';
 import { CardComponent } from '../../../core/components/card/card.component';
 import IWorkUnitDto from '../../../core/http/dtos/IWorkUnitDto';
 import { ToastService } from '../../../core/services/toast.service';
+import { ModalService } from '../../../core/services/modal.service';
 
 @Component({
   selector: 'app-department-inclusion',
@@ -31,6 +32,7 @@ export class DepartmentInclusionComponent implements OnInit, OnDestroy {
   private depAssessmentService: HazardInventoryService = inject(HazardInventoryService);
   private toastService: ToastService = inject(ToastService);
   private router = inject(Router);
+  private modalService: ModalService = inject(ModalService);
 
   // Control
   inventoryId!: number;
@@ -72,16 +74,18 @@ export class DepartmentInclusionComponent implements OnInit, OnDestroy {
 
   // Card handlers section
   async onDeleteAction(event: string): Promise<void> {
-    try {
-      await this.apiService.deleteData("pgr/work-unit/delete", { id: event });
-      if (this.inventory?.workUnits) {
-        const filteredWorkUnitArray = this.inventory.workUnits.filter(el => el.id?.toString() != event);
-        this.depAssessmentService.updateHazardInventoryState({ workUnits: filteredWorkUnitArray });
+
+    this.modalService.open('CONFIRM', 'DELETE_CONFIRM', 'CONFIRM', 'CANCEL').then((result) => {
+      if (result) {
+        this.apiService.deleteData("pgr/work-unit/delete", { id: event }).then(() => {
+          if (this.inventory?.workUnits) {
+            const filteredWorkUnitArray = this.inventory.workUnits.filter(el => el.id?.toString() != event);
+            this.depAssessmentService.updateHazardInventoryState({ workUnits: filteredWorkUnitArray });
+          }
+          this.toastService.success('SUCCESSFULLY_DELETED');
+        }).catch(() => this.toastService.error('ERROR'));
       }
-      this.toastService.success('SUCCESSFULLY_DELETED');
-    } catch (error) {
-      this.toastService.error('ERROR');
-    }
+    }).catch(() => this.toastService.error('ERROR'));
   }
 
   onCardAction(event: string): void {

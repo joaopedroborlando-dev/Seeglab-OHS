@@ -93,7 +93,6 @@ export class SearchableDropdownComponent implements OnInit, OnDestroy {
       distinctUntilChanged(),
       takeUntil(this.destroy$)
     ).subscribe(value => {
-      console.log(value);
       if (this.control.disabled || value == null || value === '') {
         return;
       }
