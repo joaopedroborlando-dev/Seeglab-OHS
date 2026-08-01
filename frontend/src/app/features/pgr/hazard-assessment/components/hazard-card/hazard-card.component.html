@@ -156,7 +156,56 @@
     </div>
   </form>
 </div>
+<!-- TABLE -->
 <app-hazard-assessment-table [assessment]="currentAssessment" (editRowFactor)="onEditRowFactor($event)"
-  (deleteControlMesure)="deleteControlMesure($event)"
-  (deleteRowFactor)="onDeleteRow($event)"></app-hazard-assessment-table>
+  (deleteControlMesure)="deleteControlMesure($event)" (deleteRowFactor)="onDeleteRow($event)"
+  (insertControlMesure)="onInsertControlMesure()"></app-hazard-assessment-table>
+<!-- CONTROL MEASURES SIDE DRAWER -->
+<app-side-drawer [isOpen]="drawerOpen()" title="{{ 'CONTROL_MEASURE' | translate }}" (closed)="handleCloseDrawer()">
+  <form [formGroup]="controlMeasureForm">
+    <div class="row g-3 p-3">
+
+      <!-- ADMINISTRATIVE MEASURE -->
+
+      <div class="col-12 ">
+        <div class="input-group mb-3">
+          <span class="input-group-text">{{ 'ADMINISTRATIVE_MEASURE' | translate }}</span>
+          <textarea class="form-control" formControlName="administrativeMeasure"></textarea>
+        </div>
+      </div>
+
+      <!-- EPC -->
+      <div class="col-12">
+        <div class="input-group mb-3">
+          <span class="input-group-text">{{ 'EPC' | translate }}</span>
+          <input type="text" class="form-control" formControlName="epc">
+        </div>
+      </div>
+
+      <!-- EPIs  -->
+      <div class="col-12">
+        <!-- Dropdown Input de EPI (Pesquisa) -->
+        <app-dropdown-input inputId="epiInput" [options]="epiOptions" label="EPI" (search)="onEpiSearch($event)"
+          (optionSelected)="onEpiSelected($event)">
+        </app-dropdown-input>
+        <!-- Chips de EPIs Selecionados -->
+        <div class="mt-2 d-flex flex-wrap gap-2">
+          @for (epi of selectedEpis; track epi.id) {
+          <span class="badge rounded-pill text-bg-light border d-flex align-items-center p-2">
+            {{ epi.name }}
+            <i class="bi bi-x ms-2" style="cursor: pointer;" (click)="removeEpi(epi.id.toString())"></i>
+          </span>
+          }
+        </div>
+      </div>
+    </div>
+    <div class="row g-3 p-3">
+      <div class="col-12 col-md-12">
+        <button class="btn btn-success">
+          {{ 'SAVE' | translate }}
+        </button>
+      </div>
+    </div>
+  </form>
+</app-side-drawer>
 }

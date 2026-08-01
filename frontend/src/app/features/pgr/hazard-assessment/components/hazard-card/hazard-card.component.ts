@@ -1,4 +1,4 @@
-import { Component, ElementRef, HostListener, inject, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { Component, ElementRef, HostListener, inject, OnDestroy, OnInit, signal, ViewChild } from '@angular/core';
 import { TranslatePipe } from '@ngx-translate/core';
 import { HazardAssessmentsService } from '../../../services/hazard-assessments.service';
 import { Subscription } from 'rxjs';
@@ -12,7 +12,7 @@ import {
 import { ApiService } from '../../../../../core/services/api.service';
 import IFactorDto from '../../../../../core/http/dtos/IFactorDto';
 import { FormRowFactorMapper } from '../../../../../core/http/mappers/FormRowFactorMapper';
-import { IPaginatedResponse } from '../../../../../core/http/dtos/PaginationTypes';
+import { IPaginatedResponse, IPaginationOptions } from '../../../../../core/http/dtos/PaginationTypes';
 import IRowFactorDto from '../../../../../core/http/dtos/IRowFactorDto';
 import { ToastService } from '../../../../../core/services/toast.service';
 import { WorkUnitService } from '../../../services/work-unit.service';
@@ -20,6 +20,8 @@ import IHazardDto from '../../../../../core/http/dtos/IHazardDto';
 import { HazardAssessmentTableComponent } from "./components/hazard-assessment-table/hazard-assessment-table.component";
 import { IControlMeasureDto } from '../../../../../core/http/dtos/IControlMeasureDto';
 import { ModalService } from '../../../../../core/services/modal.service';
+import { SideDrawerComponent } from "../../../../../core/components/side-drawer/side-drawer.component";
+import IEpiDto from '../../../../../core/http/dtos/IEpiDto';
 
 @Component({
   selector: 'app-hazard-card',
@@ -28,7 +30,8 @@ import { ModalService } from '../../../../../core/services/modal.service';
     ReactiveFormsModule,
     HazardAssessmentTableComponent,
     NgClass,
-    DropdownInputComponent
+    DropdownInputComponent,
+    SideDrawerComponent
   ],
   templateUrl: './hazard-card.component.html',
   styleUrl: './hazard-card.component.scss'
@@ -74,6 +77,18 @@ export class HazardCardComponent implements OnInit, OnDestroy {
 
   // Collape DIV
   @ViewChild('collapseForm', { static: false }) collapseFormRef!: ElementRef;
+
+  // Control Measure
+  drawerOpen = signal(false);
+  controlMeasureForm = new FormGroup({
+    id: new FormControl<number | null>(null),
+    administrativeMeasure: new FormControl<string | null>(null),
+    epc: new FormControl<string | null>(null),
+  });
+
+  // Epi
+  epiOptions: DropdownOption[] = [];
+  selectedEpis: DropdownOption[] = [];
 
   matrixArr: string[] = [
     'VERY_LOW',
@@ -298,13 +313,8 @@ export class HazardCardComponent implements OnInit, OnDestroy {
 
   //#region Control Measure Region
 
-  onInsertControlMesure(controlMesure: IControlMeasureDto): void {
-    console.log(controlMesure);
-    this.apiService.postData<IControlMeasureDto>("pgr/control-measure/create", controlMesure).then((res) => {
-      console.log(res);
-    }).catch((err) => {
-      console.error('Error creating control measure:', err);
-    });
+  onInsertControlMesure(): void {
+    this.drawerOpen.set(true);
   }
 
   deleteControlMesure(controlMesureId: number) {
@@ -316,5 +326,36 @@ export class HazardCardComponent implements OnInit, OnDestroy {
       console.error('Error deleting control measure:', err);
     });
   }
+
+  handleCloseDrawer() {
+    this.drawerOpen.set(false);
+  }
+
+  onEpiSelected(selectedOption: DropdownOption): void {
+    console.log(selectedOption);
+  }
+
+  async onEpiSearch(searchTerm: string): Promise<void> {
+    const paginationOptions: IPaginationOptions = {
+      limit: 100,
+      page: 1,
+      search: searchTerm
+    };
+    this.apiService.postData<IPaginatedResponse<IEpiDto>>("pgr/epi/find-all", paginationOptions)
+      .then(res => {
+        this.epiOptions = res.data.map(d => ({
+          id: d.id!,
+          name: d.name + " | " + d.manufacturer
+        }));
+      })
+      .catch(error => {
+        console.log(error.message);
+      });
+  }
+
+  removeEpi(id: string): void {
+    this.selectedEpis = this.selectedEpis.filter(epi => epi.id !== id);
+  }
+
   //#endregion
 }

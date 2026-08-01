@@ -3,10 +3,9 @@ import IHazardAssessmentDto from '../../../../../../../core/http/dtos/IHazardAss
 import { ApiService } from '../../../../../../../core/services/api.service';
 import { TranslatePipe } from '@ngx-translate/core';
 import { NgClass } from '@angular/common';
-import { FormControl, FormsModule, Validators, ReactiveFormsModule, FormGroup } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import IRowFactorDto from '../../../../../../../core/http/dtos/IRowFactorDto';
 import { IControlMeasureDto } from '../../../../../../../core/http/dtos/IControlMeasureDto';
-import IFactorDto from '../../../../../../../core/http/dtos/IFactorDto';
 import { ToastService } from '../../../../../../../core/services/toast.service';
 
 @Component({
@@ -38,6 +37,7 @@ export class HazardAssessmentTableComponent {
   // Outputs ControlMeasure
   editControlMesure = output<IControlMeasureDto>();
   deleteControlMesure = output<number>();
+  insertControlMesure = output<void>();
 
   // Form State ControlMeasure
   controlMesure: Partial<IControlMeasureDto> = { id: undefined, administrativeMeasure: '', epc: '', rowFactorId: undefined };
@@ -69,9 +69,6 @@ export class HazardAssessmentTableComponent {
       this.deleteRowFactor.emit(row.id);
   }
 
-  onInsertControlMesureClick(row: IRowFactorDto) { }
-
-
   //#endregion
 
   //#region ControlMeasure
@@ -80,6 +77,10 @@ export class HazardAssessmentTableComponent {
   }
   onDeleteControlMesureClick(controlMesure: IControlMeasureDto) {
 
+  }
+
+  onInsertControlMesureClick(row: IRowFactorDto) {
+    this.insertControlMesure.emit();
   }
   //#endregion
 
