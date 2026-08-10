@@ -1,9 +1,7 @@
-import IEpiDto from "./IEpiDto";
-
-export interface IControlMeasureDto {
+export interface IControlMeasureInsertDto {
     id?: number;
     rowFactorId?: number;
     administrativeMeasure?: string;
     epc?: string;
-    epis?: IEpiDto[];
+    epis?: string[];
 }

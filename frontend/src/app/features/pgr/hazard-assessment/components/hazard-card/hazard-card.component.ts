@@ -22,6 +22,7 @@ import { IControlMeasureDto } from '../../../../../core/http/dtos/IControlMeasur
 import { ModalService } from '../../../../../core/services/modal.service';
 import { SideDrawerComponent } from "../../../../../core/components/side-drawer/side-drawer.component";
 import IEpiDto from '../../../../../core/http/dtos/IEpiDto';
+import { IControlMeasureInsertDto } from '../../../../../core/http/dtos/IControlMeasureInsertDto';
 
 @Component({
   selector: 'app-hazard-card',
@@ -373,7 +374,7 @@ export class HazardCardComponent implements OnInit, OnDestroy {
       this.toastService.warning('CONTROL_MEASURE_NOT_FILLED');
       return;
     }
-    const controlMesureDto: IControlMeasureDto = {
+    const controlMesureDto: IControlMeasureInsertDto = {
       administrativeMeasure: this.controlMeasureForm.value.administrativeMeasure ?? undefined,
       epc: this.controlMeasureForm.value.epc ?? undefined,
       epis: this.selectedEpis.map(epi => epi.id.toString()),

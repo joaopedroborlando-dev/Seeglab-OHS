@@ -104,7 +104,7 @@ td {
         width: 100%;
     }
 
-    tr {
+    tr:not(.control-measures-subtable) {
         margin-bottom: 1rem;
         border: 1px solid #dee2e6;
         border-radius: 0.5rem;
@@ -112,7 +112,7 @@ td {
         box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
     }
 
-    td {
+    td:not(.control-measures-td) {
         display: flex;
         justify-content: space-between;
         align-items: center;

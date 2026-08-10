@@ -74,53 +74,79 @@
         </tr>
         <!-- CONTROL MEASURES -->
         @if (isRowExpanded(row)) {
-        <tr class="control-measures-subtable">
-            <td colspan="10" class="p-0 border-0">
-                <div class="p-3 bg-light m-2 rounded border">
-                    <h6 class="mb-3">{{ "CONTROL_MEASURES" | translate }}</h6>
-                    <table class="table table-sm table-bordered bg-white mb-0">
-                        <thead>
-                            <tr>
-                                <th class="actions-column-cm">{{ "ACTIONS" | translate }}</th>
-                                <th class="administrative-measure-column-cm">{{ "ADMINISTRATIVE_MEASURE" | translate }}
-                                </th>
-                                <!-- <th class="epi-column-cm">{{ "EPI" | translate }}</th> -->
-                                <th class="epc-column-cm">{{ "EPC" | translate }}</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @if (row.controlMeasure) {
-                            <tr>
-                                <td class="actions-column-cm">
-                                    <div class="actions-container">
-                                        <div class="dropdown w-100">
-                                            <button class="btn btn-sm btn-outline-secondary w-100" type="button"
-                                                data-bs-toggle="dropdown" aria-expanded="false">
-                                                <i class="bi bi-three-dots-vertical"></i>
-                                            </button>
-                                            <ul class="dropdown-menu">
-                                                <li>
-                                                    <button class="dropdown-item text-secondary"
-                                                        title="{{ 'EDIT' | translate }}">
-                                                        <i class="bi bi-pencil me-2"></i> {{ 'EDIT' | translate }}
-                                                    </button>
-                                                </li>
-                                                <li>
-                                                    <button class="dropdown-item text-secondary"
-                                                        title="{{ 'DELETE' | translate }}">
-                                                        <i class="bi bi-trash me-2"></i> {{ 'DELETE' | translate }}
-                                                    </button>
-                                                </li>
-                                            </ul>
-                                        </div>
-                                    </div>
-                                </td>
-                                <td>{{ row.controlMeasure!.administrativeMeasure }}</td>
-                                <td>{{ row.controlMeasure!.epc }}</td>
-                                }
-                        </tbody>
-                    </table>
+        <tr class="control-measures-subtable border-0 shadow-none p-0 mb-0">
+            <td colspan="10" class="control-measures-td p-0 border-0">
+                @if(row.controlMeasure){
+                <div class="p-3 bg-light m-2 rounded border row w-100">
+                    <div class="col-10 col-lg-11">
+                        <h6 class="mb-3">{{ "CONTROL_MEASURE" | translate }}</h6>
+                    </div>
+                    <div class="col-2 col-lg-1">
+                        <div class="actions-container">
+                            <div class="dropdown w-100">
+                                <button class="btn btn-sm btn-outline-secondary w-100" type="button"
+                                    data-bs-toggle="dropdown" aria-expanded="false">
+                                    <i class="bi bi-three-dots-vertical"></i>
+                                </button>
+                                <ul class="dropdown-menu">
+                                    <li>
+                                        <button class="dropdown-item text-secondary" title="{{ 'EDIT' | translate }}">
+                                            <i class="bi bi-pencil me-2"></i> {{ 'EDIT' | translate }}
+                                        </button>
+                                    </li>
+                                    <li>
+                                        <button class="dropdown-item text-secondary" title="{{ 'DELETE' | translate }}">
+                                            <i class="bi bi-trash me-2"></i> {{ 'DELETE' | translate }}
+                                        </button>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    @if(row.controlMeasure!.administrativeMeasure){
+                    <div class="col-12">
+                        <div class="row">
+                            <div class="col-3">
+                                <strong class="d-inline-block mb-1">{{ 'ADMINISTRATIVE_MEASURE' | translate }}:</strong>
+                            </div>
+                            <div class="col-9">
+                                {{ row.controlMeasure!.administrativeMeasure }}
+                            </div>
+                        </div>
+                    </div>
+                    }
+                    @if(row.controlMeasure!.epc){
+                    <div class="col-12">
+                        <div class="row">
+                            <div class="col-4">
+                                <strong class="d-inline-block mb-1">{{ 'EPC' | translate }}:</strong>
+                            </div>
+                            <div class="col-8">
+                                {{ row.controlMeasure!.epc }}
+                            </div>
+                        </div>
+                    </div>
+                    }
+                    @if(row.controlMeasure!.epis && row.controlMeasure!.epis.length > 0){
+                    <div class="col-12">
+                        <div class="row">
+                            <div class="col-12">
+                                <strong class="d-inline-block mb-1">{{ 'EPI_LIST' | translate }}:</strong>
+                            </div>
+                            <div class="col-12">
+                                <div class="mt-2 d-flex flex-wrap gap-2">
+                                    @for (epi of row.controlMeasure.epis; track epi.id) {
+                                    <span class="badge rounded-pill text-bg-light border d-flex align-items-center p-2">
+                                        {{ epi.name }}
+                                    </span>
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    }
                 </div>
+                }
             </td>
         </tr>
         }
