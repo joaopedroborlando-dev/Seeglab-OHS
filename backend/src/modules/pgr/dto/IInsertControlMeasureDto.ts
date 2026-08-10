@@ -1,7 +1,7 @@
-export interface IControlMeasureDto {
+export interface IInsertControlMeasureDto {
     id?: number;
     rowFactorId?: number;
     administrativeMeasure?: string;
-    epc?: string;
     epis?: string[];
+    epc?: string;
 }

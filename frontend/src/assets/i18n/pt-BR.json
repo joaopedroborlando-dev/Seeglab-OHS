@@ -20,6 +20,8 @@
   "CONFIRM": "Confirmar",
   "CONTROL_MEASURE": "Medida de Controle",
   "CONTROL_MEASURE_DELETED": "Medida de controle deletada com sucesso",
+  "CONTROL_MEASURE_INSERTED": "Medida de controle inserida com sucesso",
+  "CONTROL_MEASURE_NOT_FILLED": "Medida de controle não preenchida",
   "CONTROL_MEASURES": "Medidas de Controle",
   "CREATE_ACCOUNT": "Criar Conta",
   "CREATE_INVENTORY": "Criar Inventário",

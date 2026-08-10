@@ -85,6 +85,7 @@ export class HazardCardComponent implements OnInit, OnDestroy {
     administrativeMeasure: new FormControl<string | null>(null),
     epc: new FormControl<string | null>(null),
   });
+  rowFactorId: number | null = null;
 
   // Epi
   epiOptions: DropdownOption[] = [];
@@ -313,7 +314,8 @@ export class HazardCardComponent implements OnInit, OnDestroy {
 
   //#region Control Measure Region
 
-  onInsertControlMesure(): void {
+  onInsertControlMesure(rowFactor: IRowFactorDto): void {
+    this.rowFactorId = rowFactor.id ?? null;
     this.drawerOpen.set(true);
   }
 
@@ -329,19 +331,25 @@ export class HazardCardComponent implements OnInit, OnDestroy {
 
   handleCloseDrawer() {
     this.drawerOpen.set(false);
+    this.controlMeasureForm.reset();
+    this.selectedEpis = [];
+    this.rowFactorId = null;
   }
 
   onEpiSelected(selectedOption: DropdownOption): void {
-    console.log(selectedOption);
+    if (!this.selectedEpis.some(epi => epi.id === selectedOption.id))
+      this.selectedEpis.push(selectedOption);
   }
 
   async onEpiSearch(searchTerm: string): Promise<void> {
     const paginationOptions: IPaginationOptions = {
       limit: 100,
       page: 1,
-      search: searchTerm
+      filter: {
+        description: searchTerm
+      }
     };
-    this.apiService.postData<IPaginatedResponse<IEpiDto>>("pgr/epi/find-all", paginationOptions)
+    this.apiService.postData<IPaginatedResponse<IEpiDto>>("epi/find-all", paginationOptions)
       .then(res => {
         this.epiOptions = res.data.map(d => ({
           id: d.id!,
@@ -354,8 +362,32 @@ export class HazardCardComponent implements OnInit, OnDestroy {
   }
 
   removeEpi(id: string): void {
-    this.selectedEpis = this.selectedEpis.filter(epi => epi.id !== id);
+    this.selectedEpis = this.selectedEpis.filter(epi => epi.id != id);
   }
 
+  onSaveControlMesures() {
+    const { id, ...otherValues } = this.controlMeasureForm.value;
+
+    const hasDataAssigned = Object.values(otherValues).some(value => value !== null && value !== '');
+    if (!hasDataAssigned && !this.selectedEpis.length) {
+      this.toastService.warning('CONTROL_MEASURE_NOT_FILLED');
+      return;
+    }
+    const controlMesureDto: IControlMeasureDto = {
+      administrativeMeasure: this.controlMeasureForm.value.administrativeMeasure ?? undefined,
+      epc: this.controlMeasureForm.value.epc ?? undefined,
+      epis: this.selectedEpis.map(epi => epi.id.toString()),
+      rowFactorId: this.rowFactorId ?? undefined
+    }
+    this.apiService.postData<IControlMeasureDto>("pgr/control-measure/create", controlMesureDto).then((res: IControlMeasureDto) => {
+      this.toastService.success('CONTROL_MEASURE_INSERTED');
+      this.drawerOpen.set(false);
+      this.controlMeasureForm.reset();
+      this.selectedEpis = [];
+      this.rowFactorId = null;
+    }).catch((err) => {
+      console.error('Error inserting control measure:', err);
+    });
+  }
   //#endregion
 }

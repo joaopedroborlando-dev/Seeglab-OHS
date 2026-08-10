@@ -37,7 +37,7 @@ export class HazardAssessmentTableComponent {
   // Outputs ControlMeasure
   editControlMesure = output<IControlMeasureDto>();
   deleteControlMesure = output<number>();
-  insertControlMesure = output<void>();
+  insertControlMesure = output<IRowFactorDto>();
 
   // Form State ControlMeasure
   controlMesure: Partial<IControlMeasureDto> = { id: undefined, administrativeMeasure: '', epc: '', rowFactorId: undefined };
@@ -80,7 +80,7 @@ export class HazardAssessmentTableComponent {
   }
 
   onInsertControlMesureClick(row: IRowFactorDto) {
-    this.insertControlMesure.emit();
+    this.insertControlMesure.emit(row);
   }
   //#endregion
 

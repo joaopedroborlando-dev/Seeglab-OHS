@@ -1,10 +1,10 @@
-import {Request, Response} from "express";
+import { Request, Response } from "express";
 import * as service from "../service/controlMeasureService";
-import IControlMeasureDto from "../dto/IControlMeasureDto";
+import { IInsertControlMeasureDto } from "../dto/IInsertControlMeasureDto";
 
 const createControlMeasure = async (req: Request, res: Response): Promise<Response> => {
     try {
-        const data: IControlMeasureDto = req.body;
+        const data: IInsertControlMeasureDto = req.body;
         if (!data) return res.status(400).send("BAD_REQUEST");
         const controlMeasure = await service.createControlMeasure(data);
         return res.status(201).send(controlMeasure);
@@ -15,18 +15,18 @@ const createControlMeasure = async (req: Request, res: Response): Promise<Respon
 }
 
 const deleteControlMeasure = async (req: Request, res: Response): Promise<Response> => {
-    try{
+    try {
         const id = parseInt(req.params.id);
         return res.status(201).send(
             await service.deleteControlMeasure(id)
         );
-    }catch(err:any){
+    } catch (err: any) {
         console.log(err);
         return res.status(400).send(err.message);
     }
 }
 
-export{
+export {
     createControlMeasure,
     deleteControlMeasure,
 }
