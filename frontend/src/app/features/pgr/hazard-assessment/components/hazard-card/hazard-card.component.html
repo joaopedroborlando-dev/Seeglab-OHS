@@ -158,8 +158,9 @@
 </div>
 <!-- TABLE -->
 <app-hazard-assessment-table [assessment]="currentAssessment" (editRowFactor)="onEditRowFactor($event)"
-  (deleteControlMesure)="deleteControlMesure($event)" (deleteRowFactor)="onDeleteRow($event)"
-  (insertControlMesure)="onInsertControlMesure($event)"></app-hazard-assessment-table>
+  (deleteControlMesure)="onDeleteControlMesure($event)" (deleteRowFactor)="onDeleteRow($event)"
+  (insertControlMesure)="onInsertControlMesure($event)"
+  (editControlMesure)="onEditControlMesure($event)"></app-hazard-assessment-table>
 <!-- CONTROL MEASURES SIDE DRAWER -->
 <app-side-drawer [isOpen]="drawerOpen()" title="{{ 'CONTROL_MEASURE' | translate }}" (closed)="handleCloseDrawer()">
   <form [formGroup]="controlMeasureForm">

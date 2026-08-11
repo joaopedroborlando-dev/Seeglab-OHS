@@ -38,12 +38,14 @@
                                     <i class="bi bi-trash me-2"></i> {{ 'DELETE' | translate }}
                                 </button>
                             </li>
+                            @if(!row.controlMeasure){
                             <li>
                                 <button class="dropdown-item text-secondary" (click)="onInsertControlMesureClick(row)"
                                     title="{{ 'INSERT_CONTROL_MEASURE' | translate }}">
                                     <i class="bi bi-save me-2"></i> {{ 'INSERT_CONTROL_MEASURE' | translate }}
                                 </button>
                             </li>
+                            }
                         </ul>
                     </div>
                     @if(row.controlMeasure){
@@ -90,12 +92,14 @@
                                 </button>
                                 <ul class="dropdown-menu">
                                     <li>
-                                        <button class="dropdown-item text-secondary" title="{{ 'EDIT' | translate }}">
+                                        <button (click)="onEditControlMesureClick(row)"
+                                            class="dropdown-item text-secondary" title="{{ 'EDIT' | translate }}">
                                             <i class="bi bi-pencil me-2"></i> {{ 'EDIT' | translate }}
                                         </button>
                                     </li>
                                     <li>
-                                        <button class="dropdown-item text-secondary" title="{{ 'DELETE' | translate }}">
+                                        <button (click)="onDeleteControlMesureClick(row.controlMeasure)"
+                                            class="dropdown-item text-secondary" title="{{ 'DELETE' | translate }}">
                                             <i class="bi bi-trash me-2"></i> {{ 'DELETE' | translate }}
                                         </button>
                                     </li>

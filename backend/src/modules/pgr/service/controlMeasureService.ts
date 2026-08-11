@@ -20,6 +20,11 @@ const createControlMeasure = async (data: IInsertControlMeasureDto): Promise<ICo
         ...(data.id && { id: data.id })
     });
 
+    // Delete all EPIs relations
+    if (data.id) {
+        await AppDataSource.manager.delete(ControlMeasureEpi, { controlMeasure: { id: data.id } });
+    }
+
     // Map EPIs
     if (data.epis && data.epis.length > 0) {
         const epiRepository = AppDataSource.getRepository(Epi);
@@ -27,7 +32,7 @@ const createControlMeasure = async (data: IInsertControlMeasureDto): Promise<ICo
         for (const epiId of data.epis) {
             const epi = await epiRepository.findOne({ where: { id: Number(epiId), organizationId } });
             if (epi) {
-                epiEntities.push(await AppDataSource.manager.create(ControlMeasureEpi, {
+                epiEntities.push(AppDataSource.manager.create(ControlMeasureEpi, {
                     controlMeasure: controlMeasure,
                     epi: epi,
                     organizationId: organizationId,

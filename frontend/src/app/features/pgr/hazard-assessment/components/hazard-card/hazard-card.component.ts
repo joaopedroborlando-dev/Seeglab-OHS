@@ -320,14 +320,14 @@ export class HazardCardComponent implements OnInit, OnDestroy {
     this.drawerOpen.set(true);
   }
 
-  deleteControlMesure(controlMesureId: number) {
-    this.apiService.deleteData("pgr/control-measure/delete", { id: controlMesureId }).then((res: boolean) => {
-      if (res) {
-        this.toastService.success('CONTROL_MEASURE_DELETED');
-      }
-    }).catch((err) => {
-      console.error('Error deleting control measure:', err);
-    });
+  onDeleteControlMesure(controlMesureId: number) {
+    // this.apiService.deleteData("pgr/control-measure/delete", { id: controlMesureId }).then((res: boolean) => {
+    //   if (res) {
+    //     this.toastService.success('CONTROL_MEASURE_DELETED');
+    //   }
+    // }).catch((err) => {
+    //   console.error('Error deleting control measure:', err);
+    // });
   }
 
   handleCloseDrawer() {
@@ -389,6 +389,21 @@ export class HazardCardComponent implements OnInit, OnDestroy {
     }).catch((err) => {
       console.error('Error inserting control measure:', err);
     });
+  }
+
+  onEditControlMesure(controlMesure: IControlMeasureDto) {
+    if (!controlMesure.id || !controlMesure.rowFactorId) return;
+    this.rowFactorId = controlMesure.rowFactorId;
+    this.controlMeasureForm.patchValue({
+      administrativeMeasure: controlMesure.administrativeMeasure,
+      epc: controlMesure.epc,
+      id: controlMesure.id,
+    });
+    this.selectedEpis = controlMesure.epis?.map(epi => ({
+      id: epi.id!,
+      name: epi.name + " | " + epi.manufacturer
+    })) ?? [];
+    this.drawerOpen.set(true);
   }
   //#endregion
 }

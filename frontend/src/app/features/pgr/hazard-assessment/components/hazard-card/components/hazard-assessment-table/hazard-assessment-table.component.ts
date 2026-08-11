@@ -72,11 +72,15 @@ export class HazardAssessmentTableComponent {
   //#endregion
 
   //#region ControlMeasure
-  onEditControlMesureClick(controlMesure: Partial<IControlMeasureDto>) {
-
+  onEditControlMesureClick(rowFactor: IRowFactorDto) {
+    const { controlMeasure } = { ...rowFactor };
+    if (!controlMeasure) return;
+    controlMeasure.rowFactorId = rowFactor.id;
+    this.editControlMesure.emit(controlMeasure);
   }
   onDeleteControlMesureClick(controlMesure: IControlMeasureDto) {
-
+    if (controlMesure.id)
+      this.deleteControlMesure.emit(controlMesure.id);
   }
 
   onInsertControlMesureClick(row: IRowFactorDto) {
