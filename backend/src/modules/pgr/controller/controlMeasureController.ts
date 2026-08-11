@@ -16,7 +16,7 @@ const createControlMeasure = async (req: Request, res: Response): Promise<Respon
 
 const deleteControlMeasure = async (req: Request, res: Response): Promise<Response> => {
     try {
-        const id = parseInt(req.params.id);
+        const id = parseInt(req.query.id as string);
         return res.status(201).send(
             await service.deleteControlMeasure(id)
         );

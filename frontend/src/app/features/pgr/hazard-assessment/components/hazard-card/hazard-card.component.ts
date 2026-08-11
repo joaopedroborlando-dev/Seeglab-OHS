@@ -320,14 +320,25 @@ export class HazardCardComponent implements OnInit, OnDestroy {
     this.drawerOpen.set(true);
   }
 
-  onDeleteControlMesure(controlMesureId: number) {
-    // this.apiService.deleteData("pgr/control-measure/delete", { id: controlMesureId }).then((res: boolean) => {
-    //   if (res) {
-    //     this.toastService.success('CONTROL_MEASURE_DELETED');
-    //   }
-    // }).catch((err) => {
-    //   console.error('Error deleting control measure:', err);
-    // });
+  onDeleteControlMesure(rowFactor: IRowFactorDto) {
+    this.modalService.open('CONFIRM', 'DELETE_CONFIRM', 'CONFIRM', 'CANCEL').then((result) => {
+      if (result) {
+        this.apiService.delete$('pgr/control-measure/delete', { id: rowFactor?.controlMeasure?.id }).subscribe({
+          next: () => {
+            this.toastService.success('CONTROL_MEASURE_DELETED');
+            const rows = this.currentAssessment?.rows?.map(r => r) || [];
+            const currentRowfactor = rows.find(r => r.id === rowFactor.id);
+            if (currentRowfactor) {
+              currentRowfactor.controlMeasure = undefined;
+            }
+            this.assessmentService.updateHazardAssessmentsState({ rows });
+          },
+          error: (err) => {
+            console.error('Error deleting control measure:', err);
+          }
+        });
+      }
+    });
   }
 
   handleCloseDrawer() {
@@ -382,6 +393,10 @@ export class HazardCardComponent implements OnInit, OnDestroy {
     }
     this.apiService.postData<IControlMeasureDto>("pgr/control-measure/create", controlMesureDto).then((res: IControlMeasureDto) => {
       this.toastService.success('CONTROL_MEASURE_INSERTED');
+      const rows = this.currentAssessment?.rows?.map(r => r) || [];
+      const currentRowfactor = rows.find(r => r.id === this.rowFactorId);
+      if (currentRowfactor) currentRowfactor.controlMeasure = res;
+      this.assessmentService.updateHazardAssessmentsState({ rows });
       this.drawerOpen.set(false);
       this.controlMeasureForm.reset();
       this.selectedEpis = [];

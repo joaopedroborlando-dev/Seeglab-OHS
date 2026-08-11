@@ -39,7 +39,7 @@ export class RowFactor extends BaseModel {
     hazardAssessment: HazardAssessment;
     @Column({ type: 'enum', enum: MatrixEnum })
     score: MatrixEnum;
-    @OneToOne(() => ControlMeasure)
+    @OneToOne(() => ControlMeasure, { nullable: true })
     @JoinColumn()
-    controlMeasure: ControlMeasure;
+    controlMeasure: ControlMeasure | null;
 }

@@ -36,7 +36,7 @@ export class HazardAssessmentTableComponent {
 
   // Outputs ControlMeasure
   editControlMesure = output<IControlMeasureDto>();
-  deleteControlMesure = output<number>();
+  deleteControlMesure = output<IRowFactorDto>();
   insertControlMesure = output<IRowFactorDto>();
 
   // Form State ControlMeasure
@@ -78,9 +78,8 @@ export class HazardAssessmentTableComponent {
     controlMeasure.rowFactorId = rowFactor.id;
     this.editControlMesure.emit(controlMeasure);
   }
-  onDeleteControlMesureClick(controlMesure: IControlMeasureDto) {
-    if (controlMesure.id)
-      this.deleteControlMesure.emit(controlMesure.id);
+  onDeleteControlMesureClick(rowFactor: IRowFactorDto) {
+    this.deleteControlMesure.emit(rowFactor);
   }
 
   onInsertControlMesureClick(row: IRowFactorDto) {

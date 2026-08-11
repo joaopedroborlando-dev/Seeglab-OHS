@@ -51,9 +51,19 @@ const createControlMeasure = async (data: IInsertControlMeasureDto): Promise<ICo
 }
 
 const deleteControlMeasure = async (id: number): Promise<boolean> => {
-    const { organizationId } = getContext();
     if (!id) throw new Error("INCORRECT_DATA");
-    const deleteResult = await AppDataSource.manager.delete(ControlMeasure, { id, organizationId });
+    const rowFactor = await AppDataSource.manager.findOne(RowFactor, {
+        where: { controlMeasure: { id } },
+        relations: ['controlMeasure']
+    });
+
+    if (rowFactor) {
+        rowFactor.controlMeasure = null;
+        await AppDataSource.manager.save(rowFactor);
+    }
+
+    await AppDataSource.manager.delete(ControlMeasureEpi, { controlMeasure: { id } });
+    const deleteResult = await AppDataSource.manager.delete(ControlMeasure, { id });
     return deleteResult.affected !== 0;
 }
 
