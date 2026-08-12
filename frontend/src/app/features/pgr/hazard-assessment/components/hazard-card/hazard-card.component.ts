@@ -391,6 +391,11 @@ export class HazardCardComponent implements OnInit, OnDestroy {
       epis: this.selectedEpis.map(epi => epi.id.toString()),
       rowFactorId: this.rowFactorId ?? undefined
     }
+
+    if (id && id != 0) {
+      controlMesureDto.id = id;
+    }
+
     this.apiService.postData<IControlMeasureDto>("pgr/control-measure/create", controlMesureDto).then((res: IControlMeasureDto) => {
       this.toastService.success('CONTROL_MEASURE_INSERTED');
       const rows = this.currentAssessment?.rows?.map(r => r) || [];
