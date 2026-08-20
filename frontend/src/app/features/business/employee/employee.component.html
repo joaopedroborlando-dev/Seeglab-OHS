@@ -1,0 +1,102 @@
+<div class="container">
+  <div class="row mb-3">
+    <div class="col-12 col-md-10">
+      <h3>{{'EMPLOYEES' | translate}}</h3>
+    </div>
+    <div class="col-12 col-md-2 text-end mt-2 mt-md-0">
+      <button class="btn btn-success" (click)="toggleDrawer()">
+        {{ 'NEW_EMPLOYEE' | translate }}
+      </button>
+    </div>
+  </div>
+  <div class="row">
+    <form [formGroup]="employeeSearchFormGroup">
+      <div class="row">
+        <div class="col-12 col-md-8">
+          <div class="input-group mb-3">
+            <span class="input-group-text">{{ 'NAME' | translate }}</span>
+            <input type="text" class="form-control" formControlName="description">
+          </div>
+        </div>
+        <div class="col-12 col-md-4 text-end mt-2 mt-md-0">
+          <button class="btn btn-success me-2 mb-2 mb-md-0" (click)="handleClear()">
+            {{ 'CLEAR' | translate }}
+          </button>
+          <button class="btn btn-success mb-2 mb-md-0" (click)="handleSearch()">
+            {{ 'SEARCH' | translate }}
+          </button>
+        </div>
+      </div>
+    </form>
+  </div>
+  <div class="row">
+    <div class="col-md-12">
+      <app-dynamic-table [data]="dataTable" [canEdit]="true" [canDelete]="true" (onEdit)="handleEdit($event)"
+        (onDelete)="handleDelete($event)" (onPageChange)="fetchEmployees($event)" [totalPages]="totalPages"
+        [totalItems]="totalItems" [currentPage]="currentPage" [pageSize]="pageSize"></app-dynamic-table>
+    </div>
+  </div>
+  <app-side-drawer [isOpen]="drawerOpen()" title="{{ 'NEW_EMPLOYEE' | translate }}" (closed)="handleCancelEdit()">
+    <form [formGroup]="formGroup">
+      <div class="row">
+        <div class="col-md-12">
+          <div class="input-group mb-3">
+            <span class="input-group-text">{{ 'NAME' | translate }}</span>
+            <input type="text" class="form-control" formControlName="name">
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="input-group mb-3">
+            <span class="input-group-text">{{ 'BIRTH_DATE' | translate }}</span>
+            <input type="text" mask="d0/M0/0000" [dropSpecialCharacters]="false" placeholder="DD/MM/YYYY" class="form-control" formControlName="birthDate">
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="input-group mb-3">
+            <span class="input-group-text">{{ 'MARITAL_STATUS' | translate }}</span>
+            <input type="text" class="form-control" formControlName="maritalStatus">
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-6">
+          <div class="input-group mb-3">
+            <span class="input-group-text">{{ 'CPF' | translate }}</span>
+            <input type="text" mask="000.000.000-00" class="form-control" formControlName="CPF">
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="input-group mb-3">
+            <span class="input-group-text">{{ 'PIS' | translate }}</span>
+            <input type="text" class="form-control" formControlName="PIS">
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-12">
+          <div class="input-group mb-3">
+            <span class="input-group-text">{{ 'POST' | translate }}</span>
+            <input type="text" class="form-control" formControlName="post">
+          </div>
+        </div>
+        <div class="col-md-12">
+          <div class="input-group mb-3">
+            <span class="input-group-text">{{ 'ROLES' | translate }}</span>
+            <select class="form-control" formControlName="roleIds" multiple>
+              @for (role of availableRoles; track role.id) {
+                <option [value]="role.id">{{ role.name }}</option>
+              }
+            </select>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-6">
+          <button class="btn btn-success" (click)="handleCreate()">
+            {{ 'SAVE' | translate }}
+          </button>
+        </div>
+      </div>
+    </form>
+  </app-side-drawer>
+</div>

@@ -3,6 +3,7 @@ import hazardRoutes from "../modules/pgr/route/hazardRoute";
 import factorRoutes from "../modules/pgr/route/factorRoute";
 import roleRoutes from "../modules/business/route/roleRoute";
 import departmentRoutes from "../modules/business/route/departmentRoute";
+import employeeRoutes from "../modules/business/route/employeeRoute";
 import hazardInventoryRoutes from "../modules/pgr/route/hazardInventoryRoute";
 import workUnitRoutes from "../modules/pgr/route/workUnitRoute";
 import hazardAssessmentRoutes from "../modules/pgr/route/hazardAssessmentRoute";
@@ -27,6 +28,7 @@ routes.use("/epi", epiRoute);
 
 routes.use("/business/role", roleRoutes);
 routes.use("/business/department", departmentRoutes);
+routes.use("/business/employee", employeeRoutes);
 
 routes.use("/organization", organizationRoute);
 
