@@ -39,22 +39,28 @@
   <app-side-drawer [isOpen]="drawerOpen()" title="{{ 'NEW_EMPLOYEE' | translate }}" (closed)="handleCancelEdit()">
     <form [formGroup]="formGroup">
       <div class="row">
-        <div class="col-md-12">
+        <div class="col-12 col-md-12">
           <div class="input-group mb-3">
             <span class="input-group-text">{{ 'NAME' | translate }}</span>
             <input type="text" class="form-control" formControlName="name">
           </div>
         </div>
-        <div class="col-md-6">
+        <div class="col-12 col-md-12">
           <div class="input-group mb-3">
             <span class="input-group-text">{{ 'BIRTH_DATE' | translate }}</span>
-            <input type="text" mask="d0/M0/0000" [dropSpecialCharacters]="false" placeholder="DD/MM/YYYY" class="form-control" formControlName="birthDate">
+            <input type="text" mask="d0/M0/0000" [dropSpecialCharacters]="false" placeholder="DD/MM/YYYY"
+              class="form-control" formControlName="birthDate">
           </div>
         </div>
-        <div class="col-md-6">
+        <div class="col-12 col-md-12">
           <div class="input-group mb-3">
             <span class="input-group-text">{{ 'MARITAL_STATUS' | translate }}</span>
-            <input type="text" class="form-control" formControlName="maritalStatus">
+            <select class="form-control" formControlName="maritalStatus">
+              <option value="">{{ 'SELECT' | translate }}</option>
+              @for (status of maritalStatuses; track status) {
+              <option [value]="status">{{status | translate}}</option>
+              }
+            </select>
           </div>
         </div>
       </div>
@@ -80,14 +86,11 @@
           </div>
         </div>
         <div class="col-md-12">
-          <div class="input-group mb-3">
-            <span class="input-group-text">{{ 'ROLES' | translate }}</span>
-            <select class="form-control" formControlName="roleIds" multiple>
-              @for (role of availableRoles; track role.id) {
-                <option [value]="role.id">{{ role.name }}</option>
-              }
-            </select>
-          </div>
+          <app-box-list [items]="selectedRoles" [bindLabel]="'name'" (add)="addRoleToList()" (remove)="deleteRoleToList($event)">
+            <app-searchable-dropdown inputId="roleDataList" listId="roleList" labelText="ROLES" [control]="roleControl"
+              [items]="filteredRoles" (search)="onRoleSearch($event)" (selectionChange)="onRoleSelected($event)"
+              style="margin-bottom: 10px"></app-searchable-dropdown>
+          </app-box-list>
         </div>
       </div>
       <div class="row">

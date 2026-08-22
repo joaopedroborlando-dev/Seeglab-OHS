@@ -6,12 +6,14 @@ import IDynamicTableData from '../../../core/models/interfaces/IDynamicTableData
 import { DynamicTableComponent } from '../../../core/components/dynamic-table/dynamic-table.component';
 import { ApiService } from '../../../core/services/api.service';
 import { ToastService } from '../../../core/services/toast.service';
-import IEmployeeDto from '../../../core/http/dtos/IEmployeeDto';
+import IEmployeeDto, { maritalStatus } from '../../../core/http/dtos/IEmployeeDto';
 import IRoleDto from '../../../core/http/dtos/IRoleDto';
 import { IPaginatedResponse, IPaginationOptions } from '../../../core/http/dtos/PaginationTypes';
 import { SideDrawerComponent } from "../../../core/components/side-drawer/side-drawer.component";
 import { ModalService } from '../../../core/services/modal.service';
 import { isValidDate } from '../../../shared/utils/validationHelpers';
+import { BoxListComponent } from '../../../core/components/box-list/box-list.component';
+import { SearchableDropdownComponent } from '../../../core/components/searchable-dropdown/searchable-dropdown.component';
 
 @Component({
   selector: 'app-employee',
@@ -22,7 +24,9 @@ import { isValidDate } from '../../../shared/utils/validationHelpers';
     ReactiveFormsModule,
     DynamicTableComponent,
     SideDrawerComponent,
-    NgxMaskDirective
+    NgxMaskDirective,
+    BoxListComponent,
+    SearchableDropdownComponent
   ],
   templateUrl: './employee.component.html',
   styleUrl: './employee.component.scss'
@@ -57,11 +61,16 @@ export class EmployeeComponent implements OnInit {
 
   drawerOpen = signal(false);
 
+  maritalStatuses = Object.values(maritalStatus);
+
   employeeSearchFormGroup = new FormGroup({
     description: new FormControl<string | null>(null),
   });
 
   availableRoles: IRoleDto[] = [];
+  filteredRoles: IRoleDto[] = [];
+  selectedRoles: IRoleDto[] = [];
+  roleControl = new FormControl('');
 
   async ngOnInit(): Promise<void> {
     await this.fetchRoles();
@@ -73,6 +82,7 @@ export class EmployeeComponent implements OnInit {
     try {
       const res = await this.apiService.postData<IPaginatedResponse<IRoleDto>>("business/role/find-all", paginationOptions);
       this.availableRoles = res.data;
+      this.filteredRoles = res.data;
     } catch (e) {
       console.error(e);
     }
@@ -88,7 +98,7 @@ export class EmployeeComponent implements OnInit {
       PIS: this.formGroup.get("PIS")?.value ?? "",
       maritalStatus: this.formGroup.get("maritalStatus")?.value ?? "",
       post: this.formGroup.get("post")?.value ?? "",
-      roleIds: this.formGroup.get("roleIds")?.value ?? [],
+      roleIds: this.selectedRoles.map(r => r.id as number),
       birthDate: (() => {
         const val = this.formGroup.get("birthDate")?.value as string;
         if (val && val.length === 10) {
@@ -172,6 +182,8 @@ export class EmployeeComponent implements OnInit {
 
     const roleIds = employeeObj.roles?.map(r => r.id as number) ?? [];
     this.formGroup.get("roleIds")?.setValue(roleIds);
+    this.selectedRoles = [...(employeeObj.roles ?? [])];
+    this.roleControl.setValue('');
 
     if (employeeObj.birthDate) {
       const d = new Date(employeeObj.birthDate);
@@ -213,6 +225,8 @@ export class EmployeeComponent implements OnInit {
     this.formGroup.get("PIS")?.setValue("");
     this.formGroup.get("post")?.setValue("");
     this.formGroup.get("roleIds")?.setValue([]);
+    this.selectedRoles = [];
+    this.roleControl.setValue('');
   }
 
   toggleDrawer() {
@@ -227,5 +241,41 @@ export class EmployeeComponent implements OnInit {
   handleClear() {
     this.employeeSearchFormGroup.reset();
     this.fetchEmployees(this.currentPage);
+  }
+
+  onRoleSearch(searchTerm: string): void {
+    if (!searchTerm) {
+      this.filteredRoles = this.availableRoles;
+    } else {
+      const lowerTerm = searchTerm.toLowerCase();
+      this.filteredRoles = this.availableRoles.filter(r => r.name?.toLowerCase().includes(lowerTerm));
+    }
+  }
+
+  onRoleSelected(role: IRoleDto): void {
+    if (role && role.name) {
+      this.roleControl.setValue(role.name);
+    }
+  }
+
+  addRoleToList(): void {
+    const roleStr = this.roleControl.value;
+    const role = this.availableRoles.find(el => el.name === roleStr);
+    if (role) {
+      if (this.selectedRoles.some(el => el.id === role.id)) {
+        this.toastService.warning('ALREADY_BOUND');
+        this.roleControl.setValue('');
+        return;
+      }
+      this.selectedRoles.push(role);
+      this.roleControl.setValue('');
+    }
+  }
+
+  deleteRoleToList($event: any): void {
+    const role = this.selectedRoles.find(r => r.id === $event?.id);
+    if (role) {
+      this.selectedRoles = this.selectedRoles.filter(el => el.id !== role.id);
+    }
   }
 }

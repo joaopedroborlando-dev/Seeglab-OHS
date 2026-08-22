@@ -11,18 +11,15 @@
   <div class="item-list-container">
     <ng-content></ng-content>
     <div class="row">
-      <div class="col-12 col-lg-1">
-        <div class="button-controls d-flex flex-row flex-lg-column">
-          <button class="btn btn-outline-success me-2 me-lg-0 mb-lg-2" type="button" (click)="addItem()">
-            <i class="bi bi-plus-lg"></i>
-          </button>
-          <button class="btn btn-outline-danger" type="button" (click)="removeItem()"
-            [disabled]="selectedItemIndex < 0">
-            <i class="bi bi-trash-fill"></i>
-          </button>
-        </div>
+      <div class="col-12 d-flex gap-2 mb-2">
+        <button class="btn btn-outline-success" type="button" (click)="addItem()">
+          <i class="bi bi-plus-lg"></i>
+        </button>
+        <button class="btn btn-outline-danger" type="button" (click)="removeItem()" [disabled]="selectedItemIndex < 0">
+          <i class="bi bi-trash-fill"></i>
+        </button>
       </div>
-      <div class="col-12 col-lg-11">
+      <div class="col-12">
         <div class="list-box">
           @if (items.length > 0) {
           <ul>

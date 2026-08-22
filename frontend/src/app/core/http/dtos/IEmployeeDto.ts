@@ -11,3 +11,11 @@ export default interface IEmployeeDto {
     roles?: IRoleDto[];
     roleIds?: number[];
 }
+
+export enum maritalStatus {
+    SINGLE = "SINGLE",
+    MARRIED = "MARRIED",
+    DIVORCED = "DIVORCED",
+    WIDOWED = "WIDOWED",
+    SEPARATED = "SEPARATED"
+}
