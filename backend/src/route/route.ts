@@ -11,6 +11,7 @@ import rowFactorRoutes from "../modules/pgr/route/rowFactorRoute";
 import organizationRoute from "../shared/organization/route/organizationRoute";
 import controlMeasureRoute from "../modules/pgr/route/controlMeasureRoute";
 import epiRoute from "../modules/epi/route/epiRoute";
+import epiDeliveryRoute from "../modules/epi/route/epiDeliveryRoute";
 
 import authRoute from "../modules/auth/route/authRoute";
 
@@ -25,6 +26,7 @@ routes.use("/pgr/assessment", hazardAssessmentRoutes);
 routes.use("/pgr/row", rowFactorRoutes);
 routes.use("/pgr/control-measure", controlMeasureRoute);
 routes.use("/epi", epiRoute);
+routes.use("/epi/delivery", epiDeliveryRoute);
 
 routes.use("/business/role", roleRoutes);
 routes.use("/business/department", departmentRoutes);

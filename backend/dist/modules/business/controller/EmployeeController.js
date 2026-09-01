@@ -32,30 +32,58 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.deleteControlMeasure = exports.createControlMeasure = void 0;
-const service = __importStar(require("../service/controlMeasureService"));
-const createControlMeasure = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+exports.deleteEmployee = exports.findAllEmployees = exports.updateEmployee = exports.createEmployee = void 0;
+const service = __importStar(require("../service/EmployeeService"));
+const createEmployee = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const data = req.body;
-        if (!data)
+        if (!data || !data.name)
             return res.status(400).send("BAD_REQUEST");
-        const controlMeasure = yield service.createControlMeasure(data);
-        return res.status(201).send(controlMeasure);
+        const createdEmployee = yield service.createEmployee(data);
+        return res.status(201).send(createdEmployee);
     }
     catch (err) {
-        console.log(err);
         return res.status(400).send(err.message);
     }
 });
-exports.createControlMeasure = createControlMeasure;
-const deleteControlMeasure = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+exports.createEmployee = createEmployee;
+const updateEmployee = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const id = parseInt(req.query.id);
-        return res.status(201).send(yield service.deleteControlMeasure(id));
+        const data = req.body;
+        if (!data || !data.id)
+            return res.status(400).send("BAD_REQUEST");
+        const updatedEmployee = yield service.updateEmployee(data);
+        return res.status(200).send(updatedEmployee);
     }
     catch (err) {
-        console.log(err);
         return res.status(400).send(err.message);
     }
 });
-exports.deleteControlMeasure = deleteControlMeasure;
+exports.updateEmployee = updateEmployee;
+const findAllEmployees = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    var _a;
+    try {
+        const page = parseInt(req.body.page) || 1;
+        const limit = parseInt(req.body.limit) || 10;
+        const search = ((_a = req.body.filter) === null || _a === void 0 ? void 0 : _a.description) || req.body.search;
+        const dbRes = yield service.findAllEmployees({ page, limit, search });
+        return res.status(200).send(dbRes);
+    }
+    catch (err) {
+        return res.status(400).send(err.message);
+    }
+});
+exports.findAllEmployees = findAllEmployees;
+const deleteEmployee = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const id = parseInt(req.params.id);
+        if (!id)
+            return res.status(400).send("BAD_REQUEST");
+        yield service.deleteEmployee(id);
+        return res.status(200).send({ message: "DELETED" });
+    }
+    catch (err) {
+        return res.status(400).send(err.message);
+    }
+});
+exports.deleteEmployee = deleteEmployee;

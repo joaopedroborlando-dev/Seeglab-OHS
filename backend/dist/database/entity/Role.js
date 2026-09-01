@@ -14,6 +14,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const typeorm_1 = require("typeorm");
 const Department_1 = __importDefault(require("./Department"));
+const Employee_1 = __importDefault(require("./Employee"));
 const BaseModel_1 = require("./BaseModel");
 let Role = class Role extends BaseModel_1.BaseModel {
 };
@@ -29,6 +30,10 @@ __decorate([
     (0, typeorm_1.ManyToOne)(() => Department_1.default, (department) => department.roles),
     __metadata("design:type", Department_1.default)
 ], Role.prototype, "department", void 0);
+__decorate([
+    (0, typeorm_1.ManyToMany)(() => Employee_1.default, (employee) => employee.roles),
+    __metadata("design:type", Array)
+], Role.prototype, "employees", void 0);
 Role = __decorate([
     (0, typeorm_1.Entity)()
 ], Role);

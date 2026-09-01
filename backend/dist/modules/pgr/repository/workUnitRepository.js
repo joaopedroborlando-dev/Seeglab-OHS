@@ -38,6 +38,8 @@ exports.WorkUnitRepository = dataSource_1.AppDataSource.getRepository(WorkUnit_1
             .leftJoinAndSelect("assessments.rowFactors", "rowFactors")
             .leftJoinAndSelect("rowFactors.factor", "factor")
             .leftJoinAndMapOne("rowFactors.controlMeasure", "rowFactors.controlMeasure", "controlMeasure")
+            .leftJoinAndSelect("controlMeasure.epis", "controlMeasureEpis")
+            .leftJoinAndSelect("controlMeasureEpis.epi", "epis")
             .where("inventory.id = :inventoryId", { inventoryId })
             .andWhere("inventory.organizationId = :organizationId", { organizationId })
             .orderBy("unit.updatedAt", "DESC")

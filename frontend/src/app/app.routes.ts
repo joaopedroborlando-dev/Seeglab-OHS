@@ -9,13 +9,15 @@ import { HazardInventoryComponent } from './features/pgr/hazard-inventory/hazard
 import { HazardAssessmentComponent } from './features/pgr/hazard-assessment/hazard-assessment.component';
 import { DepartmentInclusionComponent } from './features/pgr/department-inclusion/department-inclusion.component';
 import { EpiComponent } from './features/epi-control/epi/epi.component';
+import { EpiDeliveryComponent } from './features/epi-control/epi-delivery/epi-delivery.component';
 
 export const routes: Routes = [
   { path: 'login', component: LoginComponent },
   { path: 'pgr/work-unit-inclusion', component: HazardInventoryComponent, canActivate: [AuthGuard], },
   { path: 'pgr/work-unit-inclusion/:inventoryId', component: DepartmentInclusionComponent, canActivate: [AuthGuard], },
   { path: 'pgr/assessment', component: HazardAssessmentComponent, canActivate: [AuthGuard], },
-  { path: 'pgr/epi', component: EpiComponent, canActivate: [AuthGuard], },
+  { path: 'epi/inventory', component: EpiComponent, canActivate: [AuthGuard], },
+  { path: 'epi/delivery', component: EpiDeliveryComponent, canActivate: [AuthGuard], },
   { path: 'home', component: HomeComponent, canActivate: [AuthGuard], },
   { path: 'business/department', component: DepartmentComponent, canActivate: [AuthGuard], },
   { path: 'business/role', component: RoleComponent, canActivate: [AuthGuard], },

@@ -62,8 +62,13 @@
                     <i class="bi" [class.bi-chevron-down]="!epiMenuOpen" [class.bi-chevron-up]="epiMenuOpen"></i>
                 </button>
                 <div class="submenu" [class.show]="epiMenuOpen">
-                    <a routerLink="/pgr/epi" routerLinkActive="active" class="nav-item submenu-item">
+                    <a routerLink="/epi/inventory" routerLinkActive="active" class="nav-item submenu-item">
                         {{ "EPI" | translate }}
+                    </a>
+                </div>
+                <div class="submenu" [class.show]="epiMenuOpen">
+                    <a routerLink="/epi/delivery" routerLinkActive="active" class="nav-item submenu-item">
+                        {{ "EPI_DELIVERY" | translate }}
                     </a>
                 </div>
             </div>

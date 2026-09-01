@@ -31,33 +31,49 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.createOrganization = void 0;
-const dataSource_1 = require("../../../database/dataSource");
-const Organization_1 = __importDefault(require("../../../database/entity/Organization"));
-const createOrganization = (dto) => __awaiter(void 0, void 0, void 0, function* () {
-    const { organizationId, userId, name } = dto;
-    let organization = yield dataSource_1.AppDataSource.getRepository(Organization_1.default)
-        .createQueryBuilder("organization")
-        .where("organization.id = :organizationId", { organizationId })
-        .getOne();
-    if (!organization) {
-        organization = new Organization_1.default();
-        organization.id = organizationId;
-        organization.name = name !== null && name !== void 0 ? name : '';
-        organization = yield dataSource_1.AppDataSource.manager.save(organization);
+exports.createDelivery = exports.getRecommendations = exports.getDeliveryContext = void 0;
+const service = __importStar(require("../service/epiDeliveryService"));
+const getDeliveryContext = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const inventoryId = parseInt(req.query.inventoryId);
+        if (!inventoryId)
+            return res.status(400).send("inventoryId is required");
+        const context = yield service.getDeliveryContext(inventoryId);
+        return res.status(200).send(context);
     }
-    if (userId) {
-        Promise.resolve().then(() => __importStar(require("../../../database/entity/User"))).then(({ default: User }) => __awaiter(void 0, void 0, void 0, function* () {
-            const user = yield dataSource_1.AppDataSource.getRepository(User).findOneBy({ id: userId });
-            if (user) {
-                user.organization = organization;
-                yield dataSource_1.AppDataSource.manager.save(user);
-            }
-        }));
+    catch (err) {
+        console.log(err);
+        return res.status(400).send(err.message);
     }
 });
-exports.createOrganization = createOrganization;
+exports.getDeliveryContext = getDeliveryContext;
+const getRecommendations = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const workUnitId = parseInt(req.query.workUnitId);
+        if (!workUnitId)
+            return res.status(400).send("workUnitId is required");
+        const recommendations = yield service.getRecommendations(workUnitId);
+        return res.status(200).send(recommendations);
+    }
+    catch (err) {
+        console.log(err);
+        return res.status(400).send(err.message);
+    }
+});
+exports.getRecommendations = getRecommendations;
+const createDelivery = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const data = req.body;
+        if (!data || !data.employeeId || !data.items) {
+            return res.status(400).send("BAD_REQUEST: employeeId and items are required");
+        }
+        const delivery = yield service.createDelivery(data);
+        return res.status(201).send(delivery);
+    }
+    catch (err) {
+        console.log(err);
+        return res.status(400).send(err.message);
+    }
+});
+exports.createDelivery = createDelivery;

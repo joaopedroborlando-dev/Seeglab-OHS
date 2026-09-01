@@ -13,6 +13,8 @@ import { ControlMeasure } from "./entity/ControlMeasure";
 import { Epi } from "./entity/Epi";
 import { ControlMeasureEpi } from "./entity/ControlMeasureEpi";
 import Employee from "./entity/Employee";
+import { EpiDelivery } from "./entity/EpiDelivery";
+import { EpiDeliveryItem } from "./entity/EpiDeliveryItem";
 
 export const AppDataSource = new DataSource({
     type: "postgres",
@@ -39,6 +41,8 @@ export const AppDataSource = new DataSource({
         Epi,
         ControlMeasureEpi,
         Employee,
+        EpiDelivery,
+        EpiDeliveryItem,
     ],
     subscribers: [],
     migrations: ["src/database/migration/*{.ts,.js}"],

@@ -31,10 +31,10 @@ const signUp = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         if (existingUser) {
             throw new Error('USER_ALREADY_EXISTS');
         }
-        let organization = yield organizationRepository.findOneBy({ organizationId: document });
+        let organization = yield organizationRepository.findOneBy({ id: document });
         if (!organization) {
             organization = new Organization_1.default();
-            organization.organizationId = document;
+            organization.id = document;
             organization.name = '';
             organization = yield organizationRepository.save(organization);
         }
@@ -45,8 +45,8 @@ const signUp = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         user.organization = organization;
         yield userRepository.save(user);
         yield queryRunner.commitTransaction();
-        const token = (0, jwt_1.signToken)({ userId: user.id, organizationId: organization.organizationId });
-        res.status(201).json({ token, organization: organization.organizationId, userId: user.id });
+        const token = (0, jwt_1.signToken)({ userId: user.id, organizationId: organization.id });
+        res.status(201).json({ token, organization: organization.id, userId: user.id });
     }
     catch (e) {
         yield queryRunner.rollbackTransaction();
@@ -73,10 +73,10 @@ const login = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         const isMatch = yield user.comparePassword(password);
         if (!isMatch)
             throw new Error('INVALID_CREDENTIALS');
-        if (!((_a = user.organization) === null || _a === void 0 ? void 0 : _a.organizationId))
+        if (!((_a = user.organization) === null || _a === void 0 ? void 0 : _a.id))
             throw new Error('INVALID_CREDENTIALS');
-        const token = (0, jwt_1.signToken)({ userId: user.id, organizationId: user.organization.organizationId });
-        res.json({ userId: user.id, token, organization: user.organization.organizationId });
+        const token = (0, jwt_1.signToken)({ userId: user.id, organizationId: user.organization.id });
+        res.json({ userId: user.id, token, organization: user.organization.id });
     }
     catch (error) {
         res.status(401).json({ error: error.message });

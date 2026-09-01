@@ -22,15 +22,12 @@ var __importStar = (this && this.__importStar) || function (mod) {
     __setModuleDefault(result, mod);
     return result;
 };
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
 Object.defineProperty(exports, "__esModule", { value: true });
-const express_1 = __importDefault(require("express"));
-const requestValidation_1 = require("../../../util/requestValidation");
-const controller = __importStar(require("../controller/controlMeasureController"));
-const router = express_1.default.Router();
-router.use(requestValidation_1.requestValidation);
-router.post('/create', controller.createControlMeasure);
-router.delete('/delete', controller.deleteControlMeasure);
-exports.default = router;
+const express_1 = require("express");
+const controller = __importStar(require("../controller/EmployeeController"));
+const employeeRoutes = (0, express_1.Router)();
+employeeRoutes.post("/create", controller.createEmployee);
+employeeRoutes.post("/update", controller.updateEmployee);
+employeeRoutes.delete("/delete/:id", controller.deleteEmployee);
+employeeRoutes.post("/find-all", controller.findAllEmployees);
+exports.default = employeeRoutes;

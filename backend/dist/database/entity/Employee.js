@@ -13,30 +13,40 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const typeorm_1 = require("typeorm");
-const User_1 = __importDefault(require("./User"));
-let Organization = class Organization {
+const Role_1 = __importDefault(require("./Role"));
+const BaseModel_1 = require("./BaseModel");
+let Employee = class Employee extends BaseModel_1.BaseModel {
 };
 __decorate([
-    (0, typeorm_1.PrimaryColumn)({ type: 'text' }),
+    (0, typeorm_1.Column)({ type: 'text' }),
     __metadata("design:type", String)
-], Organization.prototype, "id", void 0);
+], Employee.prototype, "name", void 0);
+__decorate([
+    (0, typeorm_1.Column)({ type: 'date', nullable: true }),
+    __metadata("design:type", Object)
+], Employee.prototype, "birthDate", void 0);
 __decorate([
     (0, typeorm_1.Column)({ type: 'text', nullable: true }),
-    __metadata("design:type", String)
-], Organization.prototype, "name", void 0);
+    __metadata("design:type", Object)
+], Employee.prototype, "maritalStatus", void 0);
 __decorate([
     (0, typeorm_1.Column)({ type: 'text', nullable: true }),
-    __metadata("design:type", String)
-], Organization.prototype, "address", void 0);
+    __metadata("design:type", Object)
+], Employee.prototype, "CPF", void 0);
 __decorate([
     (0, typeorm_1.Column)({ type: 'text', nullable: true }),
-    __metadata("design:type", String)
-], Organization.prototype, "zipcode", void 0);
+    __metadata("design:type", Object)
+], Employee.prototype, "PIS", void 0);
 __decorate([
-    (0, typeorm_1.OneToMany)(() => User_1.default, (user) => user.organization),
+    (0, typeorm_1.Column)({ type: 'text', nullable: true }),
+    __metadata("design:type", Object)
+], Employee.prototype, "post", void 0);
+__decorate([
+    (0, typeorm_1.ManyToMany)(() => Role_1.default, (role) => role.employees),
+    (0, typeorm_1.JoinTable)(),
     __metadata("design:type", Array)
-], Organization.prototype, "users", void 0);
-Organization = __decorate([
+], Employee.prototype, "roles", void 0);
+Employee = __decorate([
     (0, typeorm_1.Entity)()
-], Organization);
-exports.default = Organization;
+], Employee);
+exports.default = Employee;

@@ -75,9 +75,9 @@ __decorate([
     __metadata("design:type", Number)
 ], RowFactor.prototype, "score", void 0);
 __decorate([
-    (0, typeorm_1.OneToOne)(() => ControlMeasure_1.ControlMeasure),
+    (0, typeorm_1.OneToOne)(() => ControlMeasure_1.ControlMeasure, { nullable: true }),
     (0, typeorm_1.JoinColumn)(),
-    __metadata("design:type", ControlMeasure_1.ControlMeasure)
+    __metadata("design:type", Object)
 ], RowFactor.prototype, "controlMeasure", void 0);
 RowFactor = __decorate([
     (0, typeorm_1.Entity)()

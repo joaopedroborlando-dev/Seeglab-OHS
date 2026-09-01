@@ -28,9 +28,10 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
 const requestValidation_1 = require("../../../util/requestValidation");
-const controller = __importStar(require("../controller/controlMeasureController"));
+const controller = __importStar(require("../../epi/controller/epiDeliveryController"));
 const router = express_1.default.Router();
 router.use(requestValidation_1.requestValidation);
-router.post('/create', controller.createControlMeasure);
-router.delete('/delete', controller.deleteControlMeasure);
+router.get('/context', controller.getDeliveryContext);
+router.get('/recommendations', controller.getRecommendations);
+router.post('/create', controller.createDelivery);
 exports.default = router;

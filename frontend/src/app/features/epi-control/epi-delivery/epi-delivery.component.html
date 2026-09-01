@@ -1,0 +1,123 @@
+<div class="container">
+  <div class="row mb-3">
+    <div class="col-12">
+      <h3>{{'EPI_DELIVERY' | translate}}</h3>
+    </div>
+  </div>
+
+  <form [formGroup]="formGroup" (ngSubmit)="submitDelivery()">
+    <div class="card mb-4">
+      <div class="card-header bg-success text-white">
+        <strong>1. Contexto da Entrega</strong>
+      </div>
+      <div class="card-body">
+        <div class="row">
+          <div class="col-md-12 mb-3">
+            <div class="input-group">
+              <span class="input-group-text">{{ 'INVENTORY' | translate }}</span>
+              <select class="form-select" formControlName="inventoryId">
+                <option *ngFor="let inv of inventories" [value]="inv.id">
+                  {{inv.name}} | {{'CREATED_AT' | translate}} {{inv.createdAt| date:'shortDate'}}
+                </option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col-md-6 mb-3">
+            <div class="input-group">
+              <span class="input-group-text">{{ 'EMPLOYEE' | translate }}</span>
+              <select class="form-select" formControlName="employeeId"
+                [attr.disabled]="employeesWithWorkUnits.length === 0 ? true : null">
+                <option [ngValue]="null">{{ 'SELECT_EMPLOYEE' | translate }}</option>
+                <option *ngFor="let emp of uniqueEmployees" [value]="emp.id">
+                  {{emp.name}}
+                </option>
+              </select>
+            </div>
+          </div>
+          <div class="col-md-6 mb-3">
+            <div class="input-group">
+              <span class="input-group-text">{{ 'WORK_UNIT' | translate }}</span>
+              <select class="form-select" formControlName="workUnitId"
+                [attr.disabled]="availableWorkUnitsForEmployee.length === 0 ? true : null">
+                <option [ngValue]="null">{{ 'SELECT_WORK_UNIT' | translate }}</option>
+                <option *ngFor="let wu of availableWorkUnitsForEmployee" [value]="wu.workUnitId">
+                  {{wu.workUnitName}}
+                </option>
+              </select>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-12 mb-3">
+            <div class="input-group">
+              <span class="input-group-text">{{ 'DELIVERY_DATE' | translate }}</span>
+              <input type="date" class="form-control" formControlName="deliveredAt">
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card mb-4" *ngIf="formGroup.get('workUnitId')?.value">
+      <div class="card-header bg-success text-white d-flex justify-content-between align-items-center">
+        <strong>2. EPIs Recomendados</strong>
+        <button type="button" class="btn btn-sm btn-light" (click)="addExtraEpi()">+ Adicionar EPI Extra</button>
+      </div>
+      <div class="card-body">
+        <ng-container formArrayName="items">
+          <div class="row align-items-end mb-3 border-bottom pb-3"
+            *ngFor="let itemForm of itemsFormArray.controls; let i = index" [formGroupName]="i">
+            <div class="col-md-3">
+              <label class="form-label">EPI</label>
+              <input type="text" class="form-control" formControlName="epiName"
+                [readonly]="itemForm.get('epiId')?.value !== null">
+            </div>
+            <div class="col-md-3">
+              <label class="form-label">CA</label>
+              <input type="text" class="form-control" formControlName="caAtDelivery">
+            </div>
+            <div class="col-md-2">
+              <label class="form-label">Qtd</label>
+              <input type="number" class="form-control" formControlName="quantity" min="1">
+            </div>
+            <div class="col-md-2">
+              <label class="form-label">Tamanho</label>
+              <input type="text" class="form-control" formControlName="size">
+            </div>
+            <div class="col-md-2 text-end">
+              <button type="button" class="btn btn-danger" (click)="removeItem(i)">Remover</button>
+            </div>
+          </div>
+        </ng-container>
+        <div *ngIf="itemsFormArray.length === 0" class="text-muted text-center py-3">
+          Nenhum EPI recomendado para este GHE.
+        </div>
+      </div>
+    </div>
+
+    <div class="card mb-4" *ngIf="formGroup.get('workUnitId')?.value">
+      <div class="card-header bg-success text-white">
+        <strong>3. Finalizar Entrega</strong>
+      </div>
+      <div class="card-body">
+        <div class="row">
+          <div class="col-md-12 mb-3">
+            <label class="form-label">{{ 'NOTES' | translate }}</label>
+            <textarea class="form-control" formControlName="notes" rows="3"></textarea>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-12 text-end">
+            <button type="submit" class="btn btn-success btn-lg"
+              [disabled]="formGroup.invalid || itemsFormArray.length === 0">
+              Registrar Entrega
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </form>
+</div>

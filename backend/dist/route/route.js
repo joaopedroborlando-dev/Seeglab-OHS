@@ -8,6 +8,7 @@ const hazardRoute_1 = __importDefault(require("../modules/pgr/route/hazardRoute"
 const factorRoute_1 = __importDefault(require("../modules/pgr/route/factorRoute"));
 const roleRoute_1 = __importDefault(require("../modules/business/route/roleRoute"));
 const departmentRoute_1 = __importDefault(require("../modules/business/route/departmentRoute"));
+const employeeRoute_1 = __importDefault(require("../modules/business/route/employeeRoute"));
 const hazardInventoryRoute_1 = __importDefault(require("../modules/pgr/route/hazardInventoryRoute"));
 const workUnitRoute_1 = __importDefault(require("../modules/pgr/route/workUnitRoute"));
 const hazardAssessmentRoute_1 = __importDefault(require("../modules/pgr/route/hazardAssessmentRoute"));
@@ -15,6 +16,7 @@ const rowFactorRoute_1 = __importDefault(require("../modules/pgr/route/rowFactor
 const organizationRoute_1 = __importDefault(require("../shared/organization/route/organizationRoute"));
 const controlMeasureRoute_1 = __importDefault(require("../modules/pgr/route/controlMeasureRoute"));
 const epiRoute_1 = __importDefault(require("../modules/epi/route/epiRoute"));
+const epiDeliveryRoute_1 = __importDefault(require("../modules/epi/route/epiDeliveryRoute"));
 const authRoute_1 = __importDefault(require("../modules/auth/route/authRoute"));
 const routes = (0, express_1.Router)();
 routes.use("/auth", authRoute_1.default);
@@ -26,7 +28,9 @@ routes.use("/pgr/assessment", hazardAssessmentRoute_1.default);
 routes.use("/pgr/row", rowFactorRoute_1.default);
 routes.use("/pgr/control-measure", controlMeasureRoute_1.default);
 routes.use("/epi", epiRoute_1.default);
+routes.use("/epi/delivery", epiDeliveryRoute_1.default);
 routes.use("/business/role", roleRoute_1.default);
 routes.use("/business/department", departmentRoute_1.default);
+routes.use("/business/employee", employeeRoute_1.default);
 routes.use("/organization", organizationRoute_1.default);
 exports.default = routes;

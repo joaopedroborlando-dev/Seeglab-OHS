@@ -18,6 +18,9 @@ const HazardAssessment_1 = require("./entity/HazardAssessment");
 const ControlMeasure_1 = require("./entity/ControlMeasure");
 const Epi_1 = require("./entity/Epi");
 const ControlMeasureEpi_1 = require("./entity/ControlMeasureEpi");
+const Employee_1 = __importDefault(require("./entity/Employee"));
+const EpiDelivery_1 = require("./entity/EpiDelivery");
+const EpiDeliveryItem_1 = require("./entity/EpiDeliveryItem");
 exports.AppDataSource = new typeorm_1.DataSource({
     type: "postgres",
     host: "localhost",
@@ -42,6 +45,9 @@ exports.AppDataSource = new typeorm_1.DataSource({
         ControlMeasure_1.ControlMeasure,
         Epi_1.Epi,
         ControlMeasureEpi_1.ControlMeasureEpi,
+        Employee_1.default,
+        EpiDelivery_1.EpiDelivery,
+        EpiDeliveryItem_1.EpiDeliveryItem,
     ],
     subscribers: [],
     migrations: ["src/database/migration/*{.ts,.js}"],
