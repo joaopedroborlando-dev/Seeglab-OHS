@@ -27,7 +27,7 @@
         </div>
 
         <div class="row">
-          <div class="col-md-6 mb-3">
+          <div class="col-md-12 mb-3">
             <div class="input-group">
               <span class="input-group-text">{{ 'EMPLOYEE' | translate }}</span>
               <select class="form-select" formControlName="employeeId"
@@ -41,6 +41,8 @@
               </select>
             </div>
           </div>
+        </div>
+        <div class="row">
           <div class="col-md-6 mb-3">
             <div class="input-group">
               <span class="input-group-text">{{ 'WORK_UNIT' | translate }}</span>
@@ -55,9 +57,7 @@
               </select>
             </div>
           </div>
-        </div>
-        <div class="row">
-          <div class="col-md-12 mb-3">
+          <div class="col-md-6 mb-3">
             <div class="input-group">
               <span class="input-group-text">{{ 'DELIVERY_DATE' | translate }}</span>
               <input type="text" mask="d0/M0/0000" [dropSpecialCharacters]="false" placeholder="DD/MM/YYYY"
@@ -88,7 +88,7 @@
               <input type="text" class="form-control" formControlName="caAtDelivery">
             </div>
             <div class="col-md-1">
-              <label class="form-label">{{'QUANTITY' | translate}}</label>
+              <label class="form-label">{{'QUANTITY_ABREV' | translate}}</label>
               <input type="number" class="form-control" formControlName="quantity" min="1">
             </div>
             <div class="col-md-1">

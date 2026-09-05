@@ -114,6 +114,7 @@
   "PROBABILITY": "Probability",
   "PSL_CREATE_INVENTORY": "No data... create an inventory to start",
   "QUANTITY": "Quantity",
+  "QUANTITY_ABREV": "Qty",
   "REQUIRED_FIELD": "Required Field!",
   "RISK_ASSESSMENT_MATRIX": "Risk Assessment Risk",
   "ROLE": "Role",
