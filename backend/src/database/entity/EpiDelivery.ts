@@ -17,7 +17,7 @@ export class EpiDelivery extends BaseModel {
   employee: Employee;
 
   @ManyToOne(() => WorkUnit, { nullable: true })
-  workUnit: WorkUnit;
+  workUnit: WorkUnit | null;
 
   @Column({ type: 'date' })
   deliveredAt: Date;

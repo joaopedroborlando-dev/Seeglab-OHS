@@ -6,6 +6,7 @@ import { ApiService } from '../../../core/services/api.service';
 import { ToastService } from '../../../core/services/toast.service';
 import IHazardInventoryDto from '../../../core/http/dtos/IHazardInventoryDto';
 import IEpiDeliveryDto, { IEpiDeliveryItemDto } from '../../../core/http/dtos/IEpiDeliveryDto';
+import { NgxMaskDirective } from 'ngx-mask';
 
 @Component({
   selector: 'app-epi-delivery',
@@ -15,6 +16,7 @@ import IEpiDeliveryDto, { IEpiDeliveryItemDto } from '../../../core/http/dtos/IE
     TranslateModule,
     FormsModule,
     ReactiveFormsModule,
+    NgxMaskDirective
   ],
   templateUrl: './epi-delivery.component.html',
   styleUrl: './epi-delivery.component.scss'
@@ -32,8 +34,9 @@ export class EpiDeliveryComponent implements OnInit {
     inventoryId: new FormControl<number | null>(null),
     employeeId: new FormControl<number | null>(null),
     workUnitId: new FormControl<number | null>(null),
+    expiresAt: new FormControl<string | null>(null),
     notes: new FormControl<string>(''),
-    deliveredAt: new FormControl<string>(new Date().toISOString().substring(0, 10)),
+    deliveredAt: new FormControl<string | null>(null),
     items: new FormArray([])
   });
 
@@ -67,6 +70,16 @@ export class EpiDeliveryComponent implements OnInit {
         this.itemsFormArray.clear();
       }
     });
+
+    this.setDeliveryDate();
+  }
+
+  setDeliveryDate() {
+    const today = new Date();
+    const day = String(today.getDate()).padStart(2, '0');
+    const month = String(today.getMonth() + 1).padStart(2, '0');
+    const year = today.getFullYear();
+    this.formGroup.get('deliveredAt')?.setValue(`${day}/${month}/${year}`);
   }
 
   async fetchInventories() {
@@ -154,8 +167,17 @@ export class EpiDeliveryComponent implements OnInit {
         caAtDelivery: new FormControl(epi.caNumber || ''),
         quantity: new FormControl(1),
         size: new FormControl(''),
+        expiresAt: new FormControl(this.getExpirationDate())
       }));
     });
+  }
+
+  getExpirationDate() {
+    const today = new Date();
+    const day = String(today.getDate()).padStart(2, '0');
+    const month = String(today.getMonth() + 1).padStart(2, '0');
+    const year = today.getFullYear() + 1;
+    return `${day}/${month}/${year}`;
   }
 
   addExtraEpi() {
@@ -174,26 +196,23 @@ export class EpiDeliveryComponent implements OnInit {
 
   async submitDelivery() {
     const vals = this.formGroup.value;
-    if (!vals.employeeId || !vals.workUnitId || this.itemsFormArray.length === 0) {
+    if (!vals.employeeId || this.itemsFormArray.length === 0) {
       this.toastService.error("FILL_REQUIRED_FIELDS");
       return;
     }
 
     const payload: IEpiDeliveryDto = {
       employeeId: vals.employeeId,
-      workUnitId: vals.workUnitId,
+      workUnitId: vals.workUnitId ?? undefined,
       deliveredAt: new Date(vals.deliveredAt!),
       notes: vals.notes || undefined,
       items: this.itemsFormArray.value.map((item: any) => {
-        const expires = new Date(vals.deliveredAt!);
-        expires.setDate(expires.getDate() + 30);
-
         return {
           epiId: item.epiId,
           caAtDelivery: item.caAtDelivery,
           quantity: item.quantity,
-          size: item.size,
-          expiresAt: expires
+          size: item.size && item.size.trim().length > 0 ? item.size.toUpperCase() : undefined,
+          expiresAt: item.expiresAt
         } as IEpiDeliveryItemDto;
       })
     };

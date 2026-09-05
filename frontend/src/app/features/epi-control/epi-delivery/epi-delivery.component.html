@@ -8,7 +8,7 @@
   <form [formGroup]="formGroup" (ngSubmit)="submitDelivery()">
     <div class="card mb-4">
       <div class="card-header bg-success text-white">
-        <strong>1. Contexto da Entrega</strong>
+        <strong>1. {{'DELIVERY_CONTEXT' | translate}}</strong>
       </div>
       <div class="card-body">
         <div class="row">
@@ -60,38 +60,45 @@
           <div class="col-md-12 mb-3">
             <div class="input-group">
               <span class="input-group-text">{{ 'DELIVERY_DATE' | translate }}</span>
-              <input type="date" class="form-control" formControlName="deliveredAt">
+              <input type="text" mask="d0/M0/0000" [dropSpecialCharacters]="false" placeholder="DD/MM/YYYY"
+                class="form-control" formControlName="deliveredAt">
             </div>
           </div>
         </div>
       </div>
     </div>
 
-    <div class="card mb-4" *ngIf="formGroup.get('workUnitId')?.value">
+    <div class="card mb-4" *ngIf="formGroup.get('employeeId')?.value">
       <div class="card-header bg-success text-white d-flex justify-content-between align-items-center">
-        <strong>2. EPIs Recomendados</strong>
-        <button type="button" class="btn btn-sm btn-light" (click)="addExtraEpi()">+ Adicionar EPI Extra</button>
+        <strong>2. {{'EPI_RECOMMENDED' | translate}}</strong>
+        <button type="button" class="btn btn-sm btn-light" (click)="addExtraEpi()">+ {{'ADD_EXTRA_EPI' |
+          translate}}</button>
       </div>
       <div class="card-body">
         <ng-container formArrayName="items">
           @for (itemForm of itemsFormArray.controls; track itemForm; let i = $index) {
           <div class="row align-items-end mb-3 border-bottom pb-3" [formGroupName]="i">
             <div class="col-md-3">
-              <label class="form-label">EPI</label>
+              <label class="form-label">{{'EPI_NAME' | translate}}</label>
               <input type="text" class="form-control" formControlName="epiName"
                 [readonly]="itemForm.get('epiId')?.value !== null">
             </div>
             <div class="col-md-3">
-              <label class="form-label">CA</label>
+              <label class="form-label">{{'CA_NUMBER' | translate}}</label>
               <input type="text" class="form-control" formControlName="caAtDelivery">
             </div>
-            <div class="col-md-2">
-              <label class="form-label">Qtd</label>
+            <div class="col-md-1">
+              <label class="form-label">{{'QUANTITY' | translate}}</label>
               <input type="number" class="form-control" formControlName="quantity" min="1">
             </div>
+            <div class="col-md-1">
+              <label class="form-label">{{'SIZE' | translate}}</label>
+              <input type="text" class="form-control" style="text-transform: uppercase;" formControlName="size">
+            </div>
             <div class="col-md-2">
-              <label class="form-label">Tamanho</label>
-              <input type="text" class="form-control" formControlName="size">
+              <label class="form-label">{{ 'EXPIRATION_END' | translate }}</label>
+              <input type="text" mask="d0/M0/0000" [dropSpecialCharacters]="false" placeholder="DD/MM/YYYY"
+                class="form-control" formControlName="expiresAt">
             </div>
             <div class="col-md-2 text-end">
               <button type="button" class="btn btn-danger" (click)="removeItem(i)">Remover</button>
@@ -99,16 +106,16 @@
           </div>
           } @empty {
           <div class="text-muted text-center py-3">
-            Nenhum EPI recomendado para este GHE.
+            {{'NO_EPI_RECOMMENDED' | translate}}
           </div>
           }
         </ng-container>
       </div>
     </div>
 
-    <div class="card mb-4" *ngIf="formGroup.get('workUnitId')?.value">
+    <div class="card mb-4" *ngIf="formGroup.get('employeeId')?.value">
       <div class="card-header bg-success text-white">
-        <strong>3. Finalizar Entrega</strong>
+        <strong>3. {{'COMPLETE_DELIVERY' | translate}}</strong>
       </div>
       <div class="card-body">
         <div class="row">
@@ -121,7 +128,7 @@
           <div class="col-md-12 text-end">
             <button type="submit" class="btn btn-success btn-lg"
               [disabled]="formGroup.invalid || itemsFormArray.length === 0">
-              Registrar Entrega
+              {{'SAVE_DELIVERY' | translate}}
             </button>
           </div>
         </div>
