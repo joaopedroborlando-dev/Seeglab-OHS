@@ -3,13 +3,10 @@ import { EpiDelivery } from "../../../database/entity/EpiDelivery";
 
 export const EpiDeliveryRepository = AppDataSource.getRepository(EpiDelivery).extend({
     async getDeliveryContext(inventoryId: number) {
-        // Retorna a lista de Empregados com seus respectivos WorkUnits vinculados
         const query = `
-        select 
+        select distinct 
             e.id as "employeeId",
-            e.name as "employeeName",
-            w.id as "workUnitId",
-            w.name as "workUnitName"
+            e.name as "employeeName"
         from work_unit w
         inner join "workUnit_role" wr on wr."workUnit_id" = w.id
         inner join "role" r on r.id = wr.role_id
@@ -21,8 +18,23 @@ export const EpiDeliveryRepository = AppDataSource.getRepository(EpiDelivery).ex
         return result;
     },
 
+    async getWorkUnitByEmployeeId(employeeId: number) {
+        const query = `
+        select 
+            work_unit.id as "workUnitId",
+            work_unit.name as "workUnitName"
+        from work_unit
+        inner join "workUnit_role" wr on wr."workUnit_id" = work_unit.id
+        inner join "role" r on r.id = wr.role_id
+        inner join "employee_roles_role" er on er."roleId" = r.id
+        inner join "employee" e on e.id = er."employeeId"
+        where e.id = $1;
+    `;
+        const result = await AppDataSource.query(query, [employeeId]);
+        return result;
+    },
+
     async getRecommendations(workUnitId: number) {
-        // Retorna a lista de EPIs recomendados
         const query = `
         select
             e.id as "epiId",

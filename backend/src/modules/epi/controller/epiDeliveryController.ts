@@ -14,6 +14,18 @@ export const getDeliveryContext = async (req: Request, res: Response): Promise<R
     }
 }
 
+export const getWorkUnitByEmployeeId = async (req: Request, res: Response): Promise<Response> => {
+    try {
+        const employeeId = parseInt(req.query.employeeId as string);
+        if (!employeeId) return res.status(400).send("employeeId is required");
+        const context = await service.getWorkUnitByEmployeeId(employeeId);
+        return res.status(200).send(context);
+    } catch (err: any) {
+        console.log(err);
+        return res.status(400).send(err.message);
+    }
+}
+
 export const getRecommendations = async (req: Request, res: Response): Promise<Response> => {
     try {
         const workUnitId = parseInt(req.query.workUnitId as string);

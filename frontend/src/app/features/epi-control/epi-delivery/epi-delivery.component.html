@@ -17,9 +17,9 @@
               <span class="input-group-text">{{ 'INVENTORY' | translate }}</span>
               <select class="form-select" formControlName="inventoryId">
                 @for (inv of inventories; track inv.id) {
-                  <option [value]="inv.id">
-                    {{inv.name}} | {{'CREATED_AT' | translate}} {{inv.createdAt| date:'shortDate'}}
-                  </option>
+                <option [value]="inv.id">
+                  {{inv.name}} | {{'CREATED_AT' | translate}} {{inv.createdAt| date:'shortDate'}}
+                </option>
                 }
               </select>
             </div>
@@ -31,12 +31,12 @@
             <div class="input-group">
               <span class="input-group-text">{{ 'EMPLOYEE' | translate }}</span>
               <select class="form-select" formControlName="employeeId"
-                [attr.disabled]="employeesWithWorkUnits.length === 0 ? true : null">
+                [attr.disabled]="employees.length === 0 ? true : null">
                 <option [ngValue]="null">{{ 'SELECT_EMPLOYEE' | translate }}</option>
                 @for (emp of uniqueEmployees; track emp.id) {
-                  <option [value]="emp.id">
-                    {{emp.name}}
-                  </option>
+                <option [value]="emp.id">
+                  {{emp.name}}
+                </option>
                 }
               </select>
             </div>
@@ -48,9 +48,9 @@
                 [attr.disabled]="availableWorkUnitsForEmployee.length === 0 ? true : null">
                 <option [ngValue]="null">{{ 'SELECT_WORK_UNIT' | translate }}</option>
                 @for (wu of availableWorkUnitsForEmployee; track wu.workUnitId) {
-                  <option [value]="wu.workUnitId">
-                    {{wu.workUnitName}}
-                  </option>
+                <option [value]="wu.workUnitId">
+                  {{wu.workUnitName}}
+                </option>
                 }
               </select>
             </div>
@@ -75,32 +75,32 @@
       <div class="card-body">
         <ng-container formArrayName="items">
           @for (itemForm of itemsFormArray.controls; track itemForm; let i = $index) {
-            <div class="row align-items-end mb-3 border-bottom pb-3" [formGroupName]="i">
-              <div class="col-md-3">
-                <label class="form-label">EPI</label>
-                <input type="text" class="form-control" formControlName="epiName"
-                  [readonly]="itemForm.get('epiId')?.value !== null">
-              </div>
-              <div class="col-md-3">
-                <label class="form-label">CA</label>
-                <input type="text" class="form-control" formControlName="caAtDelivery">
-              </div>
-              <div class="col-md-2">
-                <label class="form-label">Qtd</label>
-                <input type="number" class="form-control" formControlName="quantity" min="1">
-              </div>
-              <div class="col-md-2">
-                <label class="form-label">Tamanho</label>
-                <input type="text" class="form-control" formControlName="size">
-              </div>
-              <div class="col-md-2 text-end">
-                <button type="button" class="btn btn-danger" (click)="removeItem(i)">Remover</button>
-              </div>
+          <div class="row align-items-end mb-3 border-bottom pb-3" [formGroupName]="i">
+            <div class="col-md-3">
+              <label class="form-label">EPI</label>
+              <input type="text" class="form-control" formControlName="epiName"
+                [readonly]="itemForm.get('epiId')?.value !== null">
             </div>
+            <div class="col-md-3">
+              <label class="form-label">CA</label>
+              <input type="text" class="form-control" formControlName="caAtDelivery">
+            </div>
+            <div class="col-md-2">
+              <label class="form-label">Qtd</label>
+              <input type="number" class="form-control" formControlName="quantity" min="1">
+            </div>
+            <div class="col-md-2">
+              <label class="form-label">Tamanho</label>
+              <input type="text" class="form-control" formControlName="size">
+            </div>
+            <div class="col-md-2 text-end">
+              <button type="button" class="btn btn-danger" (click)="removeItem(i)">Remover</button>
+            </div>
+          </div>
           } @empty {
-            <div class="text-muted text-center py-3">
-              Nenhum EPI recomendado para este GHE.
-            </div>
+          <div class="text-muted text-center py-3">
+            Nenhum EPI recomendado para este GHE.
+          </div>
           }
         </ng-container>
       </div>

@@ -24,7 +24,8 @@ export class EpiDeliveryComponent implements OnInit {
   toastService: ToastService = inject(ToastService);
 
   inventories: IHazardInventoryDto[] = [];
-  employeesWithWorkUnits: any[] = [];
+  employees: any[] = [];
+  workUnitsByEmployee: any[] = [];
   recommendedEpis: any[] = [];
 
   formGroup = new FormGroup({
@@ -47,16 +48,18 @@ export class EpiDeliveryComponent implements OnInit {
       if (invId) {
         this.fetchContext(invId);
       } else {
-        this.employeesWithWorkUnits = [];
+        this.employees = [];
         this.formGroup.get('employeeId')?.setValue(null);
       }
     });
 
     this.formGroup.get('employeeId')?.valueChanges.subscribe(empId => {
+      console.log(`empId`, empId);
       this.updateWorkUnitSelection(empId);
     });
 
     this.formGroup.get('workUnitId')?.valueChanges.subscribe(wuId => {
+      console.log(`wuId`, wuId);
       if (wuId) {
         this.fetchRecommendations(wuId);
       } else {
@@ -71,8 +74,11 @@ export class EpiDeliveryComponent implements OnInit {
       const res = await this.apiService.postData<any>("pgr/inventory/find-all", { page: 1, limit: 100 });
       this.inventories = res.data || [];
       if (this.inventories.length > 0) {
-        const activeInv = this.inventories.find((i: any) => i.status === 'ACTIVE') || this.inventories[0];
+        const activeInv = this.inventories[0];
         this.formGroup.get('inventoryId')?.setValue(activeInv.id ?? null);
+        if (activeInv.id) {
+          await this.fetchContext(activeInv.id);
+        }
       }
     } catch (error) {
       console.error(error);
@@ -81,10 +87,20 @@ export class EpiDeliveryComponent implements OnInit {
 
   async fetchContext(inventoryId: number) {
     try {
-      this.employeesWithWorkUnits = await this.apiService.getData<any>(`epi/delivery/context`, { inventoryId });
-      // Reset subsequent fields
+      this.employees = await this.apiService.getData<any>(`epi/delivery/context`, { inventoryId });
       this.formGroup.get('employeeId')?.setValue(null);
       this.formGroup.get('workUnitId')?.setValue(null);
+    } catch (error) {
+      this.toastService.error("FAILED_TO_LOAD_DATA");
+    }
+  }
+
+  async fetchWorkUnitByEmployeeId(employeeId: number) {
+    try {
+      const workUnits = await this.apiService.getData<any>(`epi/delivery/work-unit-by-employee-id`, { employeeId });
+      if (Array.isArray(workUnits) && workUnits.length > 0) {
+        this.workUnitsByEmployee = workUnits;
+      }
     } catch (error) {
       this.toastService.error("FAILED_TO_LOAD_DATA");
     }
@@ -95,9 +111,10 @@ export class EpiDeliveryComponent implements OnInit {
       this.formGroup.get('workUnitId')?.setValue(null);
       return;
     }
-    const empContext = this.employeesWithWorkUnits.filter(e => e.employeeId === employeeId);
-    if (empContext.length === 1) {
-      this.formGroup.get('workUnitId')?.setValue(empContext[0].workUnitId);
+    const empContext = this.employees.find(e => e.employeeId == employeeId);
+    if (empContext) {
+      this.workUnitsByEmployee = [];
+      this.fetchWorkUnitByEmployeeId(employeeId);
     } else {
       this.formGroup.get('workUnitId')?.setValue(null);
     }
@@ -106,12 +123,12 @@ export class EpiDeliveryComponent implements OnInit {
   get availableWorkUnitsForEmployee() {
     const empId = this.formGroup.get('employeeId')?.value;
     if (!empId) return [];
-    return this.employeesWithWorkUnits.filter(e => e.employeeId === empId);
+    return this.workUnitsByEmployee;
   }
 
   get uniqueEmployees() {
     const uniqueMap = new Map();
-    for (const ctx of this.employeesWithWorkUnits) {
+    for (const ctx of this.employees) {
       if (!uniqueMap.has(ctx.employeeId)) {
         uniqueMap.set(ctx.employeeId, { id: ctx.employeeId, name: ctx.employeeName });
       }
@@ -168,7 +185,6 @@ export class EpiDeliveryComponent implements OnInit {
       deliveredAt: new Date(vals.deliveredAt!),
       notes: vals.notes || undefined,
       items: this.itemsFormArray.value.map((item: any) => {
-        // Calculate expiresAt +30 days for now, ideally backend calculates or we fetch lifespan
         const expires = new Date(vals.deliveredAt!);
         expires.setDate(expires.getDate() + 30);
 

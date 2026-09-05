@@ -1,4 +1,4 @@
-import { AppDataSource } from "../../../database/dataSource";
+import { getContext } from "../../../context/requestContext";
 import { EpiDelivery } from "../../../database/entity/EpiDelivery";
 import { EpiDeliveryItem } from "../../../database/entity/EpiDeliveryItem";
 import IEpiDeliveryDto from "../dto/IEpiDeliveryDto";
@@ -12,8 +12,14 @@ export const getRecommendations = async (workUnitId: number) => {
     return await EpiDeliveryRepository.getRecommendations(workUnitId);
 }
 
+export const getWorkUnitByEmployeeId = async (employeeId: number) => {
+    return await EpiDeliveryRepository.getWorkUnitByEmployeeId(employeeId);
+}
+
 export const createDelivery = async (dto: IEpiDeliveryDto): Promise<EpiDelivery> => {
     const delivery = new EpiDelivery();
+    const { organizationId } = getContext();
+    delivery.organizationId = organizationId;
     delivery.employee = { id: dto.employeeId } as any;
     if (dto.workUnitId) {
         delivery.workUnit = { id: dto.workUnitId } as any;
@@ -39,6 +45,7 @@ export const createDelivery = async (dto: IEpiDeliveryDto): Promise<EpiDelivery>
         item.expiresAt = itemDto.expiresAt;
         item.returnedAt = itemDto.returnedAt ?? null;
         item.returnReason = itemDto.returnReason ?? null;
+        item.organizationId = organizationId;
         return item;
     });
 
