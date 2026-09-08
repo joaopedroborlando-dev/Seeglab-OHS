@@ -43,7 +43,7 @@ const findAllEpis = async (
         .createQueryBuilder("epi")
         .where("epi.organizationId = :organizationId", { organizationId });
 
-    const { description, expirationStart, expirationEnd } = filter || {};
+    const { description, expirationStart, expirationEnd, excludeIds } = filter || {};
     if (description) {
         queryBuilder.andWhere("epi.name ILIKE :description", {
             description: `%${description}%`
@@ -68,6 +68,10 @@ const findAllEpis = async (
         queryBuilder.andWhere("epi.caExpiration <= :endDate", {
             endDate
         });
+    }
+    
+    if (excludeIds && Array.isArray(excludeIds) && excludeIds.length > 0) {
+        queryBuilder.andWhere("epi.id NOT IN (:...excludeIds)", { excludeIds });
     }
 
     queryBuilder.addOrderBy("epi.name", "ASC");

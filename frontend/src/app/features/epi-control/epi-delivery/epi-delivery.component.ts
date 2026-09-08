@@ -1,4 +1,4 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, inject, OnInit, signal } from '@angular/core';
 import { TranslateModule } from '@ngx-translate/core';
 import { FormArray, FormControl, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
@@ -7,6 +7,9 @@ import { ToastService } from '../../../core/services/toast.service';
 import IHazardInventoryDto from '../../../core/http/dtos/IHazardInventoryDto';
 import IEpiDeliveryDto, { IEpiDeliveryItemDto } from '../../../core/http/dtos/IEpiDeliveryDto';
 import { NgxMaskDirective } from 'ngx-mask';
+import { SideDrawerComponent } from '../../../core/components/side-drawer/side-drawer.component';
+import { SearchableDropdownComponent } from '../../../core/components/searchable-dropdown/searchable-dropdown.component';
+import IEpiDto from '../../../core/http/dtos/IEpiDto';
 
 @Component({
   selector: 'app-epi-delivery',
@@ -16,7 +19,9 @@ import { NgxMaskDirective } from 'ngx-mask';
     TranslateModule,
     FormsModule,
     ReactiveFormsModule,
-    NgxMaskDirective
+    NgxMaskDirective,
+    SideDrawerComponent,
+    SearchableDropdownComponent
   ],
   templateUrl: './epi-delivery.component.html',
   styleUrl: './epi-delivery.component.scss'
@@ -38,6 +43,20 @@ export class EpiDeliveryComponent implements OnInit {
     notes: new FormControl<string>(''),
     deliveredAt: new FormControl<string | null>(null),
     items: new FormArray([])
+  });
+
+  drawerOpen = signal(false);
+  drawerMode: 'SELECT' | 'CREATE' = 'SELECT';
+  availableEpis: any[] = [];
+  filteredEpis: any[] = [];
+  selectedEpiId = new FormControl<number | null>(null);
+  epiSearchControl = new FormControl<string>('');
+
+  newEpiFormGroup = new FormGroup({
+    name: new FormControl(''),
+    caNumber: new FormControl(''),
+    caExpiration: new FormControl(''),
+    manufacturer: new FormControl('')
   });
 
   get itemsFormArray() {
@@ -180,14 +199,103 @@ export class EpiDeliveryComponent implements OnInit {
     return `${day}/${month}/${year}`;
   }
 
-  addExtraEpi() {
-    this.itemsFormArray.push(new FormGroup({
-      epiId: new FormControl(null),
-      epiName: new FormControl('EPI Extra'),
-      caAtDelivery: new FormControl(''),
-      quantity: new FormControl(1),
-      size: new FormControl(''),
-    }));
+  async openExtraEpiDrawer() {
+    this.drawerMode = 'SELECT';
+    this.selectedEpiId.setValue(null);
+    this.newEpiFormGroup.reset();
+
+    const excludeIds = this.itemsFormArray.value
+      .map((item: any) => item.epiId)
+      .filter((id: any) => id != null);
+
+    try {
+      const res = await this.apiService.postData<any>("epi/find-all", {
+        page: 1,
+        limit: 1000,
+        filter: { excludeIds }
+      });
+      this.availableEpis = (res.data || []).map((epi: any) => ({
+        ...epi,
+        displayName: `${epi.name} ${epi.caNumber ? '- CA ' + epi.caNumber : ''}`
+      }));
+      this.filteredEpis = [...this.availableEpis];
+      this.epiSearchControl.setValue('');
+      this.drawerOpen.set(true);
+    } catch (error) {
+      this.toastService.error("FAILED_TO_LOAD_DATA");
+    }
+  }
+
+  onEpiSearch(term: string) {
+    if (!term) {
+      this.filteredEpis = [...this.availableEpis];
+      return;
+    }
+    const lowerTerm = term.toLowerCase();
+    this.filteredEpis = this.availableEpis.filter(epi => 
+      epi.displayName.toLowerCase().includes(lowerTerm)
+    );
+  }
+
+  onEpiSelect(epi: any) {
+    this.selectedEpiId.setValue(epi.id);
+    this.epiSearchControl.setValue(epi.displayName, { emitEvent: false });
+  }
+
+  async confirmAddExtraEpi() {
+    if (this.drawerMode === 'SELECT') {
+      const epiId = this.selectedEpiId.value;
+      if (!epiId) return;
+
+      const selectedEpi = this.availableEpis.find(e => e.id === epiId);
+      if (selectedEpi) {
+        this.itemsFormArray.push(new FormGroup({
+          epiId: new FormControl(selectedEpi.id),
+          epiName: new FormControl(selectedEpi.name),
+          caAtDelivery: new FormControl(selectedEpi.caNumber || ''),
+          quantity: new FormControl(1),
+          size: new FormControl(''),
+          expiresAt: new FormControl(this.getExpirationDate())
+        }));
+      }
+      this.drawerOpen.set(false);
+    } else {
+      const name = this.newEpiFormGroup.get('name')?.value;
+      if (!name || name.trim().length === 0) {
+        this.toastService.error("FILL_REQUIRED_FIELDS");
+        return;
+      }
+
+      const payload: IEpiDto = {
+        name: name,
+        caNumber: this.newEpiFormGroup.get('caNumber')?.value ?? "",
+        caExpiration: (() => {
+          const val = this.newEpiFormGroup.get('caExpiration')?.value as string;
+          if (val && val.length === 10) {
+            const [day, month, year] = val.split('/');
+            return new Date(`${year}-${month}-${day}T00:00:00`);
+          }
+          return undefined;
+        })(),
+        manufacturer: this.newEpiFormGroup.get('manufacturer')?.value ?? "",
+      };
+
+      try {
+        const createdEpi = await this.apiService.postData<IEpiDto>("epi/create", payload);
+        this.itemsFormArray.push(new FormGroup({
+          epiId: new FormControl(createdEpi.id),
+          epiName: new FormControl(createdEpi.name),
+          caAtDelivery: new FormControl(createdEpi.caNumber || ''),
+          quantity: new FormControl(1),
+          size: new FormControl(''),
+          expiresAt: new FormControl(this.getExpirationDate())
+        }));
+        this.toastService.success("EPI_SAVED");
+        this.drawerOpen.set(false);
+      } catch (error) {
+        this.toastService.error("FAILED_TO_SAVE");
+      }
+    }
   }
 
   removeItem(index: number) {

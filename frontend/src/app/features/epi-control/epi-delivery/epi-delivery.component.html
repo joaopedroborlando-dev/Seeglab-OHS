@@ -71,7 +71,7 @@
     <div class="card mb-4" *ngIf="formGroup.get('employeeId')?.value">
       <div class="card-header bg-success text-white d-flex justify-content-between align-items-center">
         <strong>2. {{'EPI_RECOMMENDED' | translate}}</strong>
-        <button type="button" class="btn btn-sm btn-light" (click)="addExtraEpi()">+ {{'ADD_EXTRA_EPI' |
+        <button type="button" class="btn btn-sm btn-light" (click)="openExtraEpiDrawer()">+ {{'ADD_EXTRA_EPI' |
           translate}}</button>
       </div>
       <div class="card-body">
@@ -135,4 +135,54 @@
       </div>
     </div>
   </form>
+
+  <app-side-drawer [isOpen]="drawerOpen()" title="{{ 'ADD_EXTRA_EPI' | translate }}" (closed)="drawerOpen.set(false)">
+    <div class="mb-4">
+      <div class="btn-group w-100" role="group">
+        <input type="radio" class="btn-check" name="drawerModeToggle" id="modeSelect" autocomplete="off"
+          [checked]="drawerMode === 'SELECT'" (change)="drawerMode = 'SELECT'">
+        <label class="btn btn-outline-success" for="modeSelect">{{ 'SELECT_EPI' | translate }}</label>
+
+        <input type="radio" class="btn-check" name="drawerModeToggle" id="modeCreate" autocomplete="off"
+          [checked]="drawerMode === 'CREATE'" (change)="drawerMode = 'CREATE'">
+        <label class="btn btn-outline-success" for="modeCreate">{{ 'NEW_EPI' | translate }}</label>
+      </div>
+    </div>
+
+    @if (drawerMode === 'SELECT') {
+      <div class="mb-3">
+        <app-searchable-dropdown inputId="availableEpis" listId="epiList" labelText="AVAILABLE_EPIS"
+          [control]="epiSearchControl" [items]="filteredEpis" labelKey="displayName"
+          (selectionChange)="onEpiSelect($event)" (search)="onEpiSearch($event)">
+        </app-searchable-dropdown>
+      </div>
+    }
+
+    @if (drawerMode === 'CREATE') {
+      <form [formGroup]="newEpiFormGroup">
+        <div class="mb-3">
+          <label class="form-label">{{ 'NAME' | translate }}</label>
+          <input type="text" class="form-control" formControlName="name">
+        </div>
+        <div class="mb-3">
+          <label class="form-label">{{ 'CA_NUMBER' | translate }}</label>
+          <input type="text" class="form-control" formControlName="caNumber">
+        </div>
+        <div class="mb-3">
+          <label class="form-label">{{ 'CA_EXPIRATION' | translate }}</label>
+          <input type="text" mask="d0/M0/0000" [dropSpecialCharacters]="false" placeholder="DD/MM/YYYY" class="form-control" formControlName="caExpiration">
+        </div>
+        <div class="mb-3">
+          <label class="form-label">{{ 'MANUFACTURER' | translate }}</label>
+          <input type="text" class="form-control" formControlName="manufacturer">
+        </div>
+      </form>
+    }
+
+    <div class="text-end mt-4">
+      <button class="btn btn-success" (click)="confirmAddExtraEpi()">
+        {{ 'CONFIRM' | translate }}
+      </button>
+    </div>
+  </app-side-drawer>
 </div>
