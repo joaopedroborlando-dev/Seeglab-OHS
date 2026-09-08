@@ -232,7 +232,7 @@ export class EpiDeliveryComponent implements OnInit {
       return;
     }
     const lowerTerm = term.toLowerCase();
-    this.filteredEpis = this.availableEpis.filter(epi => 
+    this.filteredEpis = this.availableEpis.filter(epi =>
       epi.displayName.toLowerCase().includes(lowerTerm)
     );
   }
