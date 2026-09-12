@@ -1,0 +1,48 @@
+<div class="container">
+    <div class="row">
+        <div class="col-12 col-md-4 mb-3">
+            <h3>{{'EPI_CONTROL' | translate}}</h3>
+        </div>
+
+        <div class="col-12 col-md-8 mb-3 text-end">
+            <button class="btn btn-success me-2" (click)="handleClear()">
+                {{ 'CLEAR' | translate }}
+            </button>
+            <button class="btn btn-success" (click)="handleSearch()">
+                {{ 'SEARCH' | translate }}
+            </button>
+        </div>
+    </div>
+
+    <form [formGroup]="epiDeliverySearchFormGroup">
+        <div class="row">
+            <div class="col-12 col-md-4 mb-3">
+                <div class="input-group">
+                    <span class="input-group-text">{{ 'EMPLOYEE' | translate }}</span>
+                    <input type="text" class="form-control" formControlName="employeeCredencials">
+                </div>
+            </div>
+            <div class="col-12 col-md-4">
+                <div class="input-group mb-3">
+                    <span class="input-group-text">{{ 'EXPIRATION_START' | translate }}</span>
+                    <input type="text" mask="d0/M0/0000" [dropSpecialCharacters]="false" placeholder="DD/MM/YYYY"
+                        class="form-control" formControlName="expirationDate">
+                </div>
+            </div>
+            <div class="col-12 col-md-4 mb-3">
+                <app-searchable-dropdown inputId="workUnit" listId="workUnitList" labelText="WORK_UNIT"
+                    [control]="workUnitSearchControl" [items]="workUnits" labelKey="displayName"
+                    (selectionChange)="onWorkUnitSelect($event)" (search)="onWorkUnitSearch($event)">
+                </app-searchable-dropdown>
+            </div>
+        </div>
+    </form>
+
+    <div class="row">
+        <div class="col-12">
+            <app-dynamic-table [data]="dataTable" [totalItems]="totalItems" [currentPage]="currentPage"
+                [totalPages]="totalPages" [pageSize]="pageSize" (onPageChange)="fetchDeliveries($event)">
+            </app-dynamic-table>
+        </div>
+    </div>
+</div>

@@ -78,6 +78,7 @@ export class SearchableDropdownComponent implements OnInit, OnDestroy {
   @Input() showBindButton = false;
   @Input() labelKey = 'name';
   @Input() valueKey = 'id';
+  @Input() debounceTime = 300;
 
   @Output() search = new EventEmitter<string>();
   @Output() selectionChange = new EventEmitter<any>();
@@ -89,7 +90,7 @@ export class SearchableDropdownComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.control.valueChanges.pipe(
-      debounceTime(300),
+      debounceTime(this.debounceTime),
       distinctUntilChanged(),
       takeUntil(this.destroy$)
     ).subscribe(value => {

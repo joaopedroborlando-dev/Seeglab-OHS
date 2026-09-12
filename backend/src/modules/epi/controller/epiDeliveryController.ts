@@ -51,3 +51,14 @@ export const createDelivery = async (req: Request, res: Response): Promise<Respo
         return res.status(400).send(err.message);
     }
 }
+
+export const findAllEpiDeliveries = async (req: Request, res: Response): Promise<Response> => {
+    try {
+        const paginationOptions = req.body;
+        const deliveries = await service.findAllEpiDeliveries(paginationOptions);
+        return res.status(200).send(deliveries);
+    } catch (err: any) {
+        console.log(err);
+        return res.status(400).send(err.message);
+    }
+}

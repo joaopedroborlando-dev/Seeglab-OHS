@@ -60,10 +60,22 @@ const findRelatedWorkUnits = async (req: Request, res: Response) => {
     }
 }
 
+const findByNameLike = async (req: Request, res: Response) => {
+    try {
+        const data = req.body;
+        const workUnit = await service.findByNameLike(data);
+        return res.status(200).json(workUnit);
+    } catch (err: any) {
+        console.log(err);
+        return res.status(400).send(err.message);
+    }
+}
+
 export {
     findManyByInventoryId,
     createWorkUnit,
     deleteWorkUnit,
     findLastUpdatedWorkUnit,
     findRelatedWorkUnits,
+    findByNameLike,
 }

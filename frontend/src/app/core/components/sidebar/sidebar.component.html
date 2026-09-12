@@ -71,6 +71,11 @@
                         {{ "EPI_DELIVERY" | translate }}
                     </a>
                 </div>
+                <div class="submenu" [class.show]="epiMenuOpen">
+                    <a routerLink="/epi/control" routerLinkActive="active" class="nav-item submenu-item">
+                        {{ "EPI_CONTROL" | translate }}
+                    </a>
+                </div>
             </div>
         </nav>
     </div>

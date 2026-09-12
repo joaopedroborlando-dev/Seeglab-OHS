@@ -1,10 +1,12 @@
+import { DeliveryItemStatusEnum } from "../../../database/entity/EpiDeliveryItem";
+
 export interface IEpiDeliveryItemDto {
     id?: number;
     epiId: number;
     caAtDelivery?: string;
     quantity: number;
     size?: string;
-    status?: string;
+    status?: DeliveryItemStatusEnum;
     expiresAt?: Date;
     returnedAt?: Date;
     returnReason?: string;
@@ -12,17 +14,4 @@ export interface IEpiDeliveryItemDto {
     workUnitName?: string;
     epiName?: string;
     deliveryDate?: Date;
-}
-
-export default interface IEpiDeliveryDto {
-    id?: number;
-    employeeId: number;
-    workUnitId?: number;
-    deliveredAt: Date;
-    status?: string;
-    signatureData?: string;
-    signedAt?: Date;
-    createdById?: number;
-    notes?: string;
-    items: IEpiDeliveryItemDto[];
 }

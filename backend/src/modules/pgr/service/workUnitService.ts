@@ -8,6 +8,7 @@ import { In } from "typeorm";
 import { WorkUnitMapper } from "../mapper/WorkUnitMapper";
 import { getContext } from "../../../context/requestContext";
 import { WorkUnitRepository } from "../repository/workUnitRepository";
+import { PaginatedResponse, PaginationOptions } from "../../../infra/dto/PaginationDto";
 
 const findManyByInventoryId = async (id: number): Promise<IWorkUnitDto[]> => {
     if (!id) throw new Error("Incorrect data");
@@ -110,6 +111,38 @@ const findRelatedWorkUnits = async (id: number): Promise<IWorkUnitDto[]> => {
     return WorkUnitMapper.toDtoList(related);
 };
 
+const findByNameLike = async (paginationOptions: PaginationOptions): Promise<PaginatedResponse<IWorkUnitDto>> => {
+    const page = Math.max(1, paginationOptions.page || 1);
+    const limit = Math.max(1, Math.min(100, paginationOptions.limit || 10));
+    const skip = (page - 1) * limit;
+    const { organizationId } = getContext();
+
+    const queryBuilder = AppDataSource.getRepository(WorkUnit)
+        .createQueryBuilder("workUnit")
+        .where("workUnit.organizationId = :organizationId", { organizationId })
+        .andWhere("workUnit.name ILIKE :name", { name: `%${paginationOptions.search}%` });
+
+    queryBuilder.skip(skip).take(limit);
+
+    const total = await queryBuilder.getCount();
+
+    const rawWorkUnits = await queryBuilder.getMany()
+
+    const dtoList = WorkUnitMapper.toDtoList(rawWorkUnits);
+
+    const totalPages = Math.ceil(total / limit);
+
+    return {
+        data: dtoList,
+        meta: {
+            page,
+            limit,
+            total,
+            totalPages
+        }
+    };
+}
+
 export {
     findManyByInventoryId,
     createWorkUnit,
@@ -117,4 +150,5 @@ export {
     deleteById,
     findLastUpdatedWorkUnit,
     findRelatedWorkUnits,
+    findByNameLike,
 };

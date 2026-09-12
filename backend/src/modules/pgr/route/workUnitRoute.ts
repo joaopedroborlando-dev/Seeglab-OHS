@@ -1,6 +1,6 @@
 import express from "express";
 import * as controller from "../controller/workUnitController";
-import {requestValidation} from "../../../util/requestValidation";
+import { requestValidation } from "../../../util/requestValidation";
 
 const router = express.Router();
 
@@ -11,5 +11,6 @@ router.post('/create', controller.createWorkUnit);
 router.delete('/delete', controller.deleteWorkUnit);
 router.get('/find-last', controller.findLastUpdatedWorkUnit);
 router.get('/find-related-by-id', controller.findRelatedWorkUnits);
+router.post('/find-by-name-like', controller.findByNameLike);
 
 export default router;
