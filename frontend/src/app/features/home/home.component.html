@@ -1,1 +1,90 @@
-<p>home works!</p>
+<div class="dashboard-container">
+  <div class="row g-4">
+    <!-- Risk Scores Dashboard -->
+    <div class="col-lg-6">
+      <div class="premium-card h-100">
+        <div class="card-header-custom">
+          <div class="header-icon bg-primary-subtle text-primary">
+            <i class="bi bi-bar-chart-fill"></i>
+          </div>
+          <div>
+            <h5 class="card-title-custom mb-0">Matriz de Riscos</h5>
+            <small class="text-muted">Último Inventário Criado</small>
+          </div>
+        </div>
+
+        <div class="card-body-custom mt-4">
+          <div *ngIf="loadingScores" class="text-center py-4">
+            <div class="spinner-border text-primary" role="status"></div>
+          </div>
+
+          <div *ngIf="!loadingScores && rowFactorsScores" class="scores-grid">
+            <div class="score-item very-low">
+              <span class="score-label">Muito Baixo</span>
+              <span class="score-value">{{ rowFactorsScores.VERY_LOW }}</span>
+            </div>
+            <div class="score-item low">
+              <span class="score-label">Baixo</span>
+              <span class="score-value">{{ rowFactorsScores.LOW }}</span>
+            </div>
+            <div class="score-item moderate">
+              <span class="score-label">Moderado</span>
+              <span class="score-value">{{ rowFactorsScores.MODERATE }}</span>
+            </div>
+            <div class="score-item high">
+              <span class="score-label">Alto</span>
+              <span class="score-value">{{ rowFactorsScores.HIGH }}</span>
+            </div>
+            <div class="score-item very-high">
+              <span class="score-label">Muito Alto</span>
+              <span class="score-value">{{ rowFactorsScores.VERY_HIGH }}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- EPI Delivery Dashboard -->
+    <div class="col-lg-6">
+      <div class="premium-card h-100">
+        <div class="card-header-custom">
+          <div class="header-icon bg-warning-subtle text-warning">
+            <i class="bi bi-shield-exclamation"></i>
+          </div>
+          <div>
+            <h5 class="card-title-custom mb-0">Controle de EPIs</h5>
+            <small class="text-muted">Vencimentos e Alertas</small>
+          </div>
+        </div>
+
+        <div class="card-body-custom mt-4">
+          <div *ngIf="loadingEpi" class="text-center py-4">
+            <div class="spinner-border text-warning" role="status"></div>
+          </div>
+
+          <div *ngIf="!loadingEpi && epiDeliveryStats" class="epi-stats-container">
+            <div class="stat-card expiring">
+              <div class="stat-icon bg-warning-subtle text-warning">
+                <i class="bi bi-calendar-week"></i>
+              </div>
+              <div class="stat-content">
+                <span class="stat-value text-warning">{{ epiDeliveryStats.expiringThisWeek }}</span>
+                <span class="stat-label">Vencendo esta semana</span>
+              </div>
+            </div>
+
+            <div class="stat-card expired">
+              <div class="stat-icon bg-danger-subtle text-danger">
+                <i class="bi bi-exclamation-octagon"></i>
+              </div>
+              <div class="stat-content">
+                <span class="stat-value text-danger">{{ epiDeliveryStats.expired }}</span>
+                <span class="stat-label">Já vencidos</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

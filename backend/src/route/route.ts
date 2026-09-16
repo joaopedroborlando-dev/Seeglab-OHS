@@ -12,6 +12,7 @@ import organizationRoute from "../shared/organization/route/organizationRoute";
 import controlMeasureRoute from "../modules/pgr/route/controlMeasureRoute";
 import epiRoute from "../modules/epi/route/epiRoute";
 import epiDeliveryRoute from "../modules/epi/route/epiDeliveryRoute";
+import dashboardRoute from "../modules/dashboard/route/dashboardRoute";
 
 import authRoute from "../modules/auth/route/authRoute";
 
@@ -34,5 +35,6 @@ routes.use("/business/department", departmentRoutes);
 routes.use("/business/employee", employeeRoutes);
 
 routes.use("/organization", organizationRoute);
+routes.use("/dashboard", dashboardRoute);
 
 export default routes;
