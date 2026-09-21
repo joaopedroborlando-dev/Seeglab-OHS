@@ -4,18 +4,18 @@ import { Component, EventEmitter, Input, Output } from '@angular/core';
   selector: 'app-card',
   imports: [],
   template: `
-    <div class="card" style="margin-bottom: 10px">
+    <div class="premium-card" style="margin-bottom: 10px">
       <div class="card-body">
         @if(cardTitle){
         <h5 class="card-title" style="padding: 5px">{{cardTitle}}</h5>
         }
-        @if(cradSubTitle){
-        <h6 style="padding: 5px; color: gray;">{{cradSubTitle}}</h6>
+        @if(cardSubTitle){
+        <h6 style="padding: 5px; color: #2d3748;">{{cardSubTitle}}</h6>
         }
         <div class="row">
           <div class="col-9">
-            @if(cartBodyText){
-            <small style="padding: 5px; font-size: 12px; color: gray;">{{cartBodyText}}</small>
+            @if(cardBodyText){
+            <small style="padding: 5px; font-size: 1rem; color: #444a55ff;">{{cardBodyText}}</small>
             }
           </div>
           @if(enableActionBtn){
@@ -38,14 +38,14 @@ import { Component, EventEmitter, Input, Output } from '@angular/core';
 })
 export class CardComponent {
   @Input() cardTitle: string = "";
-  @Input() cartBodyText: string = "";
+  @Input() cardBodyText: string = "";
   @Input() cartId: string = "";
   @Input() enableActionBtn: boolean = true;
   @Input() enableDeleteBtn: boolean = false;
   @Input() btnIconName: string = "bi bi-chevron-right";
   @Output() onAction: EventEmitter<string> = new EventEmitter();
   @Output() onDeleteAction: EventEmitter<string> = new EventEmitter();
-  @Input() cradSubTitle: string = "";
+  @Input() cardSubTitle: string = "";
 
   onButtonClick() {
     this.onAction.emit(this.cartId);

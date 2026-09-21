@@ -33,7 +33,7 @@
     <div class="col-6">
       @for (inventory of inventoryData; track inventory) {
       <div style="margin-bottom: 5px">
-        <app-card [cartBodyText]="inventory.name" [cartId]="inventory.id?.toString() || '' "
+        <app-card [cardBodyText]="inventory.name" [cartId]="inventory.id?.toString() || '' "
           (onAction)="handleCardAction($event)">
         </app-card>
       </div>

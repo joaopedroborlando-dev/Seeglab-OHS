@@ -9,8 +9,8 @@
   <div class="row">
     <div class="col-12 col-lg-4 card-container" style="margin-top: 32px;">
       @for (el of inventory?.workUnits; track el) {
-      <app-card [cardTitle]="el?.name ?? ''" [cartBodyText]="('ROLES' | translate) + ' : ' + getCardText(el)"
-        [btnIconName]="'bi bi-clipboard2-fill'" [cradSubTitle]="('DEPARTMENT' | translate) + ' : ' + el.departmentName"
+      <app-card [cardTitle]="el?.name ?? ''" [cardBodyText]="('ROLES' | translate) + ' : ' + getCardText(el)"
+        [btnIconName]="'bi bi-clipboard2-fill'" [cardSubTitle]="('DEPARTMENT' | translate) + ' : ' + el.departmentName"
         [enableDeleteBtn]="true" (onDeleteAction)="onDeleteAction($event)" (onAction)="onCardAction($event)"
         [cartId]="el?.id?.toString() ?? ''"></app-card>
       }
