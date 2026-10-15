@@ -79,4 +79,14 @@
             </div>
         </nav>
     </div>
+
+    <div class="sidebar-footer">
+        <button id="sidebar-logout-btn" class="logout-btn" type="button" (click)="logout()"
+            [attr.title]="'LOGOUT' | translate" [attr.aria-label]="'LOGOUT' | translate">
+            <i class="bi bi-box-arrow-right"></i>
+            @if (isSidebarOpen) {
+            <span>{{ "LOGOUT" | translate }}</span>
+            }
+        </button>
+    </div>
 </div>

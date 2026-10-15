@@ -104,4 +104,52 @@
       }
     }
   }
+
+  .sidebar-footer {
+    margin-top: auto; // Mantém o botão no rodapé, mesmo com a sidebar fechada
+    border-top: 1px solid #dee2e6;
+    padding: 0.5rem 0;
+
+    .logout-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 100%;
+      padding: 0.75rem 1rem;
+      border: none;
+      background: none;
+      color: #333;
+      font-size: 0.8rem;
+      cursor: pointer;
+      transition: background-color 0.2s, color 0.2s;
+
+      i {
+        font-size: 1.25rem;
+        transition: transform 0.2s;
+      }
+
+      span {
+        margin-left: 0.75rem;
+        white-space: nowrap;
+      }
+
+      &:hover {
+        background-color: #fbeaea;
+        color: #b33a3a;
+
+        i {
+          transform: translateX(2px);
+        }
+      }
+
+      &:focus-visible {
+        outline: 2px solid #b33a3a;
+        outline-offset: -2px;
+      }
+    }
+  }
+
+  &.open .sidebar-footer .logout-btn {
+    justify-content: flex-start;
+  }
 }
