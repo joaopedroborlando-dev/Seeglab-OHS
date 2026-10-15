@@ -18,11 +18,11 @@ import { EpiDeliveryItem } from "./entity/EpiDeliveryItem";
 
 export const AppDataSource = new DataSource({
     type: "postgres",
-    host: "localhost",
-    port: 5432,
-    username: "postgres",
-    password: "postgres",
-    database: "core",
+    host: process.env.DB_HOST || "localhost",
+    port: Number(process.env.DB_PORT) || 5432,
+    username: process.env.DB_USERNAME || "postgres",
+    password: process.env.DB_PASSWORD || "postgres",
+    database: process.env.DB_DATABASE || "core",
     synchronize: true,
     logging: false,
     entities: [
@@ -45,5 +45,8 @@ export const AppDataSource = new DataSource({
         EpiDeliveryItem,
     ],
     subscribers: [],
-    migrations: ["src/database/migration/*{.ts,.js}"],
+    // Roda as migrations pendentes no initialize() (após o synchronize criar as tabelas)
+    migrationsRun: true,
+    // __dirname resolve tanto em src/ (ts-node) quanto em dist/ (Docker)
+    migrations: [__dirname + "/migration/*{.ts,.js}"],
 })
