@@ -4,6 +4,7 @@ import { AuthService } from '../../core/services/auth.service';
 import { Router } from '@angular/router';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { NgxMaskDirective } from 'ngx-mask';
+import { ToastService } from '../../core/services/toast.service';
 
 @Component({
   selector: 'app-login',
@@ -25,6 +26,7 @@ export class LoginComponent implements OnInit {
   authService = inject(AuthService)
   router: Router = inject(Router);
   translateService: TranslateService = inject(TranslateService);
+  toastService: ToastService = inject(ToastService);
 
   error: boolean = false;
   signupSelected: boolean = false;
@@ -43,6 +45,7 @@ export class LoginComponent implements OnInit {
     ).then(() => {
       this.error = false;
       this.router.navigateByUrl('home');
+      this.toastService.success('SUCCESSFULLY_LOGGED_IN');
     }).catch((error) => {
       this.error = true;
       console.error('Email/Password Sign-In error:', error?.message);
@@ -63,6 +66,7 @@ export class LoginComponent implements OnInit {
       this.error = false;
       this.signupSelected = false;
       this.router.navigateByUrl('home');
+      this.toastService.success('SUCCESSFULLY_SIGNUP');
     }).catch((error) => {
       this.error = true;
       console.error('Email/Password Sign-Up error:', error?.message);
@@ -78,5 +82,9 @@ export class LoginComponent implements OnInit {
       default:
         this.documentInputPlaceholder = 'DOCUMENT_ID';
     }
+  }
+
+  onBack() {
+    this.signupSelected = false;
   }
 }

@@ -5,9 +5,9 @@
     </div>
 
     @if (error) {
-      <div class="alert alert-warning" role="alert">
-        {{ 'INVALID_CREDENTIALS' | translate }}
-      </div>
+    <div class="alert alert-warning" role="alert">
+      {{ 'INVALID_CREDENTIALS' | translate }}
+    </div>
     }
 
     <form>
@@ -23,32 +23,29 @@
         </div>
 
         @if (signupSelected) {
-          <div class="mb-3">
-            <label for="phoneControl" class="form-label">{{ 'PHONE_NUMBER' | translate }}</label>
-            <input mask="(00) 00000-0000" [dropSpecialCharacters]="false" type="tel" class="form-control" id="phoneControl" [formControl]="phoneControl">
-          </div>
+        <div class="mb-3">
+          <label for="phoneControl" class="form-label">{{ 'PHONE_NUMBER' | translate }}</label>
+          <input mask="(00) 00000-0000" [dropSpecialCharacters]="false" type="tel" class="form-control"
+            id="phoneControl" [formControl]="phoneControl">
+        </div>
 
-          <div class="mb-3">
-            <label for="documentControl" class="form-label">{{ 'DOCUMENT_ID' | translate }}</label>
-            <input
-              type="tel"
-              class="form-control"
-              id="documentControl"
-              mask="000.000.000-00||00.000.000/0000-00"
-              [placeholder]="documentInputPlaceholder | translate "
-              [formControl]="documentControl">
-          </div>
+        <div class="mb-3">
+          <label for="documentControl" class="form-label">{{ 'DOCUMENT_ID' | translate }}</label>
+          <input type="tel" class="form-control" id="documentControl" mask="000.000.000-00||00.000.000/0000-00"
+            [placeholder]="documentInputPlaceholder | translate " [formControl]="documentControl">
+        </div>
         }
       </div>
     </form>
 
     @if (!signupSelected) {
-      <div class="signup-container">
-        <span class="signup-text" (click)="setSignup()">{{ 'CREATE_ACCOUNT' | translate }}</span>
-      </div>
-      <button type="button" class="mb-9 btn btn-light" (click)="handleLogin()">Log in</button>
+    <div class="signup-container">
+      <span class="signup-text" (click)="setSignup()">{{ 'CREATE_ACCOUNT' | translate }}</span>
+    </div>
+    <button type="button" class="mb-9 btn btn-light" (click)="handleLogin()">{{ 'LOGIN' | translate }}</button>
     } @else {
-      <button type="button" class="mb-9 btn btn-light" (click)="handleSignup()">Sign up</button>
+    <button type="button" class="mb-9 me-2 btn btn-light" (click)="handleSignup()">{{ 'SIGN_UP' | translate }}</button>
+    <button type="button" class="mb-9 btn btn-light" (click)="onBack()">{{ 'BACK' | translate }}</button>
     }
 
   </div>
