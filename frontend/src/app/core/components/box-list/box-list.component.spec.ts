@@ -1,4 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { provideTranslateService } from '@ngx-translate/core';
 
 import { BoxListComponent } from './box-list.component';
 
@@ -8,7 +9,8 @@ describe('BoxListComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [BoxListComponent]
+      imports: [BoxListComponent],
+      providers: [provideTranslateService()]
     })
     .compileComponents();
 

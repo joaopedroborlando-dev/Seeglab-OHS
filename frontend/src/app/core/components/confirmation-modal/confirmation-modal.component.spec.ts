@@ -1,6 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { ConfirmationModalComponent } from './confirmation-modal.component';
+import { provideTranslateService } from '@ngx-translate/core';
 
 describe('ConfirmationModalComponent', () => {
   let component: ConfirmationModalComponent;
@@ -8,9 +9,10 @@ describe('ConfirmationModalComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [ConfirmationModalComponent]
+      imports: [ConfirmationModalComponent],
+      providers: [provideTranslateService()]
     })
-    .compileComponents();
+      .compileComponents();
 
     fixture = TestBed.createComponent(ConfirmationModalComponent);
     component = fixture.componentInstance;
@@ -19,5 +21,12 @@ describe('ConfirmationModalComponent', () => {
 
   it('should create', () => {
     expect(component).toBeTruthy();
+  });
+
+  it('should emit confirm event when confirm button is clicked', () => {
+    spyOn(component.confirmed, 'emit');
+    const button = fixture.nativeElement.querySelector('.btn-primary');
+    button.click();
+    expect(component.confirmed.emit).toHaveBeenCalledWith(true);
   });
 });
