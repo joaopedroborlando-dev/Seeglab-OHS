@@ -8,7 +8,7 @@ import { CookieService } from 'ngx-cookie-service';
 import { Router } from '@angular/router';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class AuthService {
   cookieService: CookieService = inject(CookieService);
@@ -19,7 +19,7 @@ export class AuthService {
   public isAuthenticated$ = this.authState.asObservable();
   private autoLogoutTimer: any;
 
-  constructor() { }
+  constructor() {}
 
   private decodeToken(token: string): any {
     try {
@@ -35,9 +35,21 @@ export class AuthService {
 
     const expires = new Date(decoded.exp * 1000);
 
-    this.cookieService.set('token', token, { expires, path: '/', sameSite: 'Lax' });
-    this.cookieService.set('email', email, { expires, path: '/', sameSite: 'Lax' });
-    this.cookieService.set('organization', organization, { expires, path: '/', sameSite: 'Lax' });
+    this.cookieService.set('token', token, {
+      expires,
+      path: '/',
+      sameSite: 'Lax',
+    });
+    this.cookieService.set('email', email, {
+      expires,
+      path: '/',
+      sameSite: 'Lax',
+    });
+    this.cookieService.set('organization', organization, {
+      expires,
+      path: '/',
+      sameSite: 'Lax',
+    });
 
     this.authState.next(true);
     const expiresIn = expires.getTime() - new Date().getTime();
@@ -55,10 +67,12 @@ export class AuthService {
   }
 
   async login(email: string, password: string): Promise<void> {
-    const response = await firstValueFrom(this.http.post<any>(
-      `${environment.base_auth_url}auth/login`,
-      { email, password }
-    ));
+    const response = await firstValueFrom(
+      this.http.post<any>(`${environment.base_auth_url}auth/login`, {
+        email,
+        password,
+      })
+    );
     await this.registerOrganization(response, email);
   }
 
@@ -73,11 +87,20 @@ export class AuthService {
     }
   }
 
-  async signup(email: string, password: string, phone: string, document: string): Promise<void> {
-    const response = await firstValueFrom(this.http.post<any>(
-      `${environment.base_auth_url}auth/signup`,
-      { email, password, phone, document }
-    ));
+  async signup(
+    email: string,
+    password: string,
+    phone: string,
+    document: string
+  ): Promise<void> {
+    const response = await firstValueFrom(
+      this.http.post<any>(`${environment.base_auth_url}auth/signup`, {
+        email,
+        password,
+        phone,
+        document,
+      })
+    );
     await this.registerOrganization(response, email);
   }
 
@@ -86,28 +109,30 @@ export class AuthService {
   }
 
   getAuth(): Observable<IAuth | undefined> {
-    return this.cookieService.get('token') ? of({
-      token: this.cookieService.get('token'),
-      email: this.cookieService.get('email'),
-      organization: this.cookieService.get('organization')
-    }) : of(undefined);
+    return this.cookieService.get('token')
+      ? of({
+          token: this.cookieService.get('token'),
+          email: this.cookieService.get('email'),
+          organization: this.cookieService.get('organization'),
+        })
+      : of(undefined);
   }
 
   async registerOrganization(res: any, email: string) {
     const { userId, organization, token } = res;
-    const headers = new HttpHeaders({
-      'Authorization': `Bearer ${token}`,
-      'Content-Type': 'application/json'
-    });
-    console.log('chamou registerOtganization');
-    const response: any = await firstValueFrom(this.http.post(
-      `${environment.base_url}organization/register`,
-      { userId, organizationId: organization, name: email },
-      { headers, observe: 'response' }
-    ));
-    if (response.status !== 201) {
-      throw new Error('Organization registration failed');
-    }
+    // const headers = new HttpHeaders({
+    //   'Authorization': `Bearer ${token}`,
+    //   'Content-Type': 'application/json'
+    // });
+    // console.log('chamou registerOtganization');
+    // const response: any = await firstValueFrom(this.http.post(
+    //   `${environment.base_url}organization/register`,
+    //   { userId, organizationId: organization, name: email },
+    //   { headers, observe: 'response' }
+    // ));
+    // if (response.status !== 201) {
+    //   throw new Error('Organization registration failed');
+    // }
     this.setCookies(token, email, organization);
   }
 

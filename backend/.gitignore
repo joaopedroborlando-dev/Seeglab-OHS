@@ -3,3 +3,5 @@ node_modules
 .env
 dist
 .idea/
+# JWT keys (generate locally, never commit)
+src/auth/keys/

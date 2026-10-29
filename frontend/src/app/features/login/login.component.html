@@ -14,25 +14,39 @@
       <div>
         <div class="mb-3">
           <label for="emailControl" class="form-label">{{ 'E-MAIL' | translate }}</label>
-          <input type="email" class="form-control" id="emailControl" [formControl]="emailControl">
+          <input type="email" class="form-control" id="emailControl" [formControl]="emailControl"
+            [class.is-invalid]="emailControl.invalid && emailControl.touched">
+          <div class="invalid-feedback">
+            {{ (emailControl.hasError('required') ? 'REQUIRED_FIELD' : 'INVALID_EMAIL') | translate }}
+          </div>
         </div>
 
         <div class="mb-3">
           <label for="passwordControl" class="form-label">{{ 'PASSWORD' | translate }}</label>
-          <input type="password" class="form-control" id="passwordControl" [formControl]="passwordControl">
+          <input type="password" class="form-control" id="passwordControl" [formControl]="passwordControl"
+            [class.is-invalid]="passwordControl.invalid && passwordControl.touched">
+          <div class="invalid-feedback">{{ 'REQUIRED_FIELD' | translate }}</div>
         </div>
 
         @if (signupSelected) {
         <div class="mb-3">
           <label for="phoneControl" class="form-label">{{ 'PHONE_NUMBER' | translate }}</label>
-          <input mask="(00) 00000-0000" [dropSpecialCharacters]="false" type="tel" class="form-control"
-            id="phoneControl" [formControl]="phoneControl">
+          <input mask="(00) 0000-0000||(00) 00000-0000" [dropSpecialCharacters]="false" type="tel" class="form-control"
+            id="phoneControl" [formControl]="phoneControl"
+            [class.is-invalid]="phoneControl.invalid && phoneControl.touched">
+          <div class="invalid-feedback">
+            {{ (phoneControl.hasError('required') ? 'REQUIRED_FIELD' : 'INVALID_PHONE') | translate }}
+          </div>
         </div>
 
         <div class="mb-3">
           <label for="documentControl" class="form-label">{{ 'DOCUMENT_ID' | translate }}</label>
           <input type="tel" class="form-control" id="documentControl" mask="000.000.000-00||00.000.000/0000-00"
-            [placeholder]="documentInputPlaceholder | translate " [formControl]="documentControl">
+            [placeholder]="documentInputPlaceholder | translate " [formControl]="documentControl"
+            [class.is-invalid]="documentControl.invalid && documentControl.touched">
+          <div class="invalid-feedback">
+            {{ (documentControl.hasError('required') ? 'REQUIRED_FIELD' : 'INVALID_DOCUMENT') | translate }}
+          </div>
         </div>
         }
       </div>

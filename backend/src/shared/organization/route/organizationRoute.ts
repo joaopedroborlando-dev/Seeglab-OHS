@@ -3,6 +3,4 @@ import * as controller from "../../../shared/organization/controller/organizatio
 
 const router = express.Router();
 
-router.post('/register', controller.createOrganization);
-
 export default router;

@@ -5,6 +5,7 @@ import { Router } from '@angular/router';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { NgxMaskDirective } from 'ngx-mask';
 import { ToastService } from '../../core/services/toast.service';
+import { documentValidator, emailValidator, phoneValidator } from '../../shared/utils/formValidators';
 
 @Component({
   selector: 'app-login',
@@ -18,10 +19,10 @@ import { ToastService } from '../../core/services/toast.service';
 })
 export class LoginComponent implements OnInit {
 
-  emailControl = new FormControl('', [Validators.required, Validators.email]);
+  emailControl = new FormControl('', [Validators.required, Validators.maxLength(254), emailValidator()]);
   passwordControl = new FormControl('', [Validators.required]);
-  phoneControl = new FormControl('', [Validators.required, Validators.minLength(10)]);
-  documentControl = new FormControl('', [Validators.required, Validators.minLength(11)]);
+  phoneControl = new FormControl('', [Validators.required, phoneValidator()]);
+  documentControl = new FormControl('', [Validators.required, documentValidator()]);
 
   authService = inject(AuthService)
   router: Router = inject(Router);
@@ -39,8 +40,10 @@ export class LoginComponent implements OnInit {
   }
 
   async handleLogin() {
+    if (this.isFormInvalid([this.emailControl, this.passwordControl])) return;
+
     this.authService.login(
-      this.emailControl.value ?? "",
+      this.emailControl.value?.trim() ?? "",
       this.passwordControl.value ?? ""
     ).then(() => {
       this.error = false;
@@ -52,13 +55,20 @@ export class LoginComponent implements OnInit {
     });
   }
 
+  private isFormInvalid(controls: FormControl[]): boolean {
+    controls.forEach(control => control.markAsTouched());
+    return controls.some(control => control.invalid);
+  }
+
   setSignup() {
     this.signupSelected = true;
   }
 
   async handleSignup() {
+    if (this.isFormInvalid([this.emailControl, this.passwordControl, this.phoneControl, this.documentControl])) return;
+
     this.authService.signup(
-      this.emailControl.value ?? "",
+      this.emailControl.value?.trim() ?? "",
       this.passwordControl.value ?? "",
       this.phoneControl.value ?? "",
       this.documentControl.value ?? "",
